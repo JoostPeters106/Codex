@@ -1,5 +1,34 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from tournament import draw_group, schedule_round_robin
+import json
+import sqlite3
+from datetime import datetime
+
+
+DB_PATH = "tournaments.db"
+
+
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_db():
+    conn = get_db()
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS tournaments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        created_at TEXT,
+        data TEXT
+    )"""
+    )
+    conn.commit()
+    conn.close()
+
+
+init_db()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'replace-this-secret'
@@ -7,7 +36,15 @@ app.secret_key = 'replace-this-secret'
 @app.route('/')
 def index():
     players = session.get('players', [])
-    return render_template('index.html', players=players)
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT id, name, created_at FROM tournaments ORDER BY id DESC"
+    ).fetchall()
+    conn.close()
+    tournaments = [dict(r) for r in rows]
+    return render_template(
+        'index.html', players=players, tournaments=tournaments
+    )
 
 
 @app.route('/add', methods=['POST'])
@@ -42,12 +79,26 @@ def start_tournament():
         'score2': None,
     } for m in schedule_round_robin(group_a)]
     standings_a = [{'name': p, 'points': 0, 'gd': 0} for p in group_a]
-    session['tournament'] = {
+
+    tournament_data = {
+        'players': players,
         'group_a': group_a,
         'schedule_a': schedule_a,
         'standings_a': standings_a,
     }
-    return redirect(url_for('tournament_view'))
+
+    conn = get_db()
+    name = f"Tournament {datetime.utcnow().isoformat(timespec='seconds')}"
+    cur = conn.execute(
+        "INSERT INTO tournaments (name, created_at, data) VALUES (?, ?, ?)",
+        (name, datetime.utcnow().isoformat(timespec='seconds'), json.dumps(tournament_data)),
+    )
+    tid = cur.lastrowid
+    conn.commit()
+    conn.close()
+
+    session['current_tournament_id'] = tid
+    return redirect(url_for('tournament_view', t_id=tid))
 
 
 def _find_standing(standings, name):
@@ -92,23 +143,23 @@ def _revert_result(match, standings):
     _find_standing(standings, p2)['gd'] -= s2 - s1
 
 
-@app.route('/record/<group>/<int:index>', methods=['POST'])
-def record_score(group: str, index: int):
-    t = session.get('tournament')
-    if not t:
-        return redirect(url_for('index'))
-
+@app.route('/tournament/<int:t_id>/record/<group>/<int:index>', methods=['POST'])
+def record_score(t_id: int, group: str, index: int):
     if group != 'A':
-        return redirect(url_for('tournament_view'))
-    schedule_key = 'schedule_a'
-    standings_key = 'standings_a'
+        return redirect(url_for('tournament_view', t_id=t_id))
 
-    schedule = t.get(schedule_key)
-    standings = t.get(standings_key)
-    if schedule is None or standings is None:
-        return redirect(url_for('tournament_view'))
-    if not (0 <= index < len(schedule)):
-        return redirect(url_for('tournament_view'))
+    conn = get_db()
+    row = conn.execute("SELECT data FROM tournaments WHERE id=?", (t_id,)).fetchone()
+    if row is None:
+        conn.close()
+        return redirect(url_for('index'))
+    data = json.loads(row['data'])
+
+    schedule = data.get('schedule_a')
+    standings = data.get('standings_a')
+    if schedule is None or standings is None or not (0 <= index < len(schedule)):
+        conn.close()
+        return redirect(url_for('tournament_view', t_id=t_id))
 
     match = schedule[index]
     _revert_result(match, standings)
@@ -118,20 +169,58 @@ def record_score(group: str, index: int):
         match['score2'] = int(request.form.get('score2'))
     except (TypeError, ValueError):
         match['score1'] = match['score2'] = None
-        return redirect(url_for('tournament_view'))
+        conn.close()
+        return redirect(url_for('tournament_view', t_id=t_id))
 
     _apply_result(match, standings)
-    session['tournament'] = t
-    return redirect(url_for('tournament_view'))
+
+    conn.execute(
+        "UPDATE tournaments SET data=? WHERE id=?",
+        (json.dumps(data), t_id),
+    )
+    conn.commit()
+    conn.close()
+    return redirect(url_for('tournament_view', t_id=t_id))
 
 
 @app.route('/tournament')
-def tournament_view():
-    t = session.get('tournament')
-    if not t:
+def tournament_current():
+    tid = session.get('current_tournament_id')
+    if not tid:
         return redirect(url_for('index'))
-    players = session.get('players', [])
-    return render_template('tournament.html', players=players, **t)
+    return redirect(url_for('tournament_view', t_id=tid))
+
+
+@app.route('/tournament/<int:t_id>')
+def tournament_view(t_id: int):
+    conn = get_db()
+    row = conn.execute('SELECT data FROM tournaments WHERE id=?', (t_id,)).fetchone()
+    conn.close()
+    if row is None:
+        return redirect(url_for('index'))
+    data = json.loads(row['data'])
+    standings_a = data.get('standings_a', [])
+    standings_a = sorted(standings_a, key=lambda x: (-x['points'], -x['gd']))
+    return render_template(
+        'tournament.html',
+        players=data.get('players', []),
+        group_a=data.get('group_a', []),
+        schedule_a=data.get('schedule_a', []),
+        standings_a=standings_a,
+        t_id=t_id,
+    )
+
+
+@app.route('/delete/<int:t_id>', methods=['POST'])
+def delete_tournament(t_id: int):
+    conn = get_db()
+    conn.execute('DELETE FROM tournaments WHERE id=?', (t_id,))
+    conn.commit()
+    conn.close()
+    if session.get('current_tournament_id') == t_id:
+        session.pop('current_tournament_id', None)
+        session.pop('players', None)
+    return redirect(url_for('index'))
 
 
 @app.route('/reset', methods=['POST'])
