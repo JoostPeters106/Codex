@@ -9,6 +9,25 @@
 <body>
     <h1>Darts Tournament Manager</h1>
 
+    <section>
+        <h2>Previous Tournaments</h2>
+        {% if tournaments %}
+        <ul>
+            {% for t in tournaments %}
+            <li>
+                {{ t.name }} - {{ t.created_at }}
+                <a href="{{ url_for('tournament_view', t_id=t.id) }}">Open</a>
+                <form action="{{ url_for('delete_tournament', t_id=t.id) }}" method="post" style="display:inline">
+                    <button type="submit" class="styled-button">Delete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No tournaments saved.</p>
+        {% endif %}
+    </section>
+
     <section id="player-input-section">
         <h2>Enter Player Names</h2>
         <form action="{{ url_for('add_player') }}" method="post">
