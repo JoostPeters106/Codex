@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from tournament import draw_groups, schedule_round_robin
+from tournament import draw_group, schedule_round_robin
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'replace-this-secret'
@@ -34,28 +34,18 @@ def start_tournament():
     players = session.get('players', [])
     if not players:
         return redirect(url_for('index'))
-    group_a, group_b = draw_groups(players.copy())
+    group_a = draw_group(players.copy())
     schedule_a = [{
         'p1': m.p1,
         'p2': m.p2,
         'score1': None,
         'score2': None,
     } for m in schedule_round_robin(group_a)]
-    schedule_b = [{
-        'p1': m.p1,
-        'p2': m.p2,
-        'score1': None,
-        'score2': None,
-    } for m in schedule_round_robin(group_b)]
     standings_a = [{'name': p, 'points': 0, 'gd': 0} for p in group_a]
-    standings_b = [{'name': p, 'points': 0, 'gd': 0} for p in group_b]
     session['tournament'] = {
         'group_a': group_a,
-        'group_b': group_b,
         'schedule_a': schedule_a,
-        'schedule_b': schedule_b,
         'standings_a': standings_a,
-        'standings_b': standings_b,
     }
     return redirect(url_for('tournament_view'))
 
@@ -108,8 +98,10 @@ def record_score(group: str, index: int):
     if not t:
         return redirect(url_for('index'))
 
-    schedule_key = 'schedule_a' if group == 'A' else 'schedule_b'
-    standings_key = 'standings_a' if group == 'A' else 'standings_b'
+    if group != 'A':
+        return redirect(url_for('tournament_view'))
+    schedule_key = 'schedule_a'
+    standings_key = 'standings_a'
 
     schedule = t.get(schedule_key)
     standings = t.get(standings_key)
