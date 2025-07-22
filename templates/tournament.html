@@ -8,6 +8,17 @@
 </head>
 <body>
     <h1>Tournament Started</h1>
+    <form id="reset-form" action="{{ url_for('reset') }}" method="post">
+        <button id="reset-btn" type="button" class="styled-button">Go back to start</button>
+    </form>
+
+    <div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+        <div style="background:#fff; padding:1em; border-radius:5px; width:200px; margin:20% auto; text-align:center;">
+            <p>Are you sure?</p>
+            <button id="confirm-yes" class="styled-button">Yes</button>
+            <button id="confirm-no" class="styled-button">No</button>
+        </div>
+    </div>
 
     <section>
         <h2>Players</h2>
@@ -28,16 +39,12 @@
             <tr>
                 <td>{{ m.p1 }} vs {{ m.p2 }}</td>
                 <td>
-                    {% if m.score1 is none %}
                     <form action="{{ url_for('record_score', group='A', index=loop.index0) }}" method="post" style="display:inline">
-                        <input type="number" name="score1" min="0" required style="width:3em;">
+                        <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
                         -
-                        <input type="number" name="score2" min="0" required style="width:3em;">
+                        <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
                         <button type="submit" class="styled-button">Save</button>
                     </form>
-                    {% else %}
-                    {{ m.score1 }} - {{ m.score2 }}
-                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
@@ -61,16 +68,12 @@
             <tr>
                 <td>{{ m.p1 }} vs {{ m.p2 }}</td>
                 <td>
-                    {% if m.score1 is none %}
                     <form action="{{ url_for('record_score', group='B', index=loop.index0) }}" method="post" style="display:inline">
-                        <input type="number" name="score1" min="0" required style="width:3em;">
+                        <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
                         -
-                        <input type="number" name="score2" min="0" required style="width:3em;">
+                        <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
                         <button type="submit" class="styled-button">Save</button>
                     </form>
-                    {% else %}
-                    {{ m.score1 }} - {{ m.score2 }}
-                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
@@ -83,5 +86,21 @@
             {% endfor %}
         </table>
     </section>
+    <script>
+        const resetBtn = document.getElementById('reset-btn');
+        const modal = document.getElementById('confirm-modal');
+        const yesBtn = document.getElementById('confirm-yes');
+        const noBtn = document.getElementById('confirm-no');
+
+        resetBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('reset-form').submit();
+        });
+        noBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    </script>
 </body>
 </html>
