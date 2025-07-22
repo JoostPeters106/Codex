@@ -34,6 +34,29 @@ button {
     margin-top: 1em;
 }
 
+.styled-button {
+    padding: 0.25em 1em;
+    margin-top: 0;
+    background-color: #007bff; /* Voorbeeldkleur */
+    color: #fff; /* Tekstkleur */
+    border: none; /* Geen rand */
+    border-radius: 4px; /* Hoekafgeronde randen */
+    cursor: pointer; /* Cursor verandert bij hover */
+    font-size: 16px; /* Lettergrootte */
+}
+.styled-button:hover {
+    background-color: #0056b3; /* Donkerder bij hover */
+}
+
+.styled-input {
+    margin: 1em 0; /* Boven- en ondermarge */
+    border: 1px solid #ced4da; /* Randkleur */
+    border-radius: 4px; /* Hoekafgeronde randen */
+    width: 250px; /* Breedte van het invoerveld */
+    font-size: 16px; /* Lettergrootte */
+    transition: border-color 0.3s; /* Voor een soepele overgang */
+}
+
 #player-list {
     list-style: none;
     padding: 0;

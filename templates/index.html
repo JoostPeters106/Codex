@@ -12,8 +12,8 @@
     <section id="player-input-section">
         <h2>Enter Player Names</h2>
         <form action="{{ url_for('add_player') }}" method="post">
-            <input type="text" name="player_name" placeholder="Player name">
-            <button type="submit">Add</button>
+            <input type="text" class="styled-input" name="player_name" placeholder="Player name">
+            <button type="submit" class="styled-button">Add</button>
         </form>
         {% if players %}
         <ul id="player-list">
@@ -21,7 +21,7 @@
             <li>
                 {{ p }}
                 <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post" style="display:inline">
-                    <button type="submit">Remove</button>
+                    <button type="submit" class="styled-button">Remove</button>
                 </form>
             </li>
             {% endfor %}
