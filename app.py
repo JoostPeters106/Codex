@@ -84,6 +84,23 @@ def _apply_result(match, standings):
     _find_standing(standings, p1)['gd'] += s1 - s2
     _find_standing(standings, p2)['gd'] += s2 - s1
 
+def _revert_result(match, standings):
+    s1 = match['score1']
+    s2 = match['score2']
+    p1 = match['p1']
+    p2 = match['p2']
+    if s1 is None or s2 is None:
+        return
+    if s1 > s2:
+        _find_standing(standings, p1)['points'] -= 3
+    elif s2 > s1:
+        _find_standing(standings, p2)['points'] -= 3
+    else:
+        _find_standing(standings, p1)['points'] -= 1
+        _find_standing(standings, p2)['points'] -= 1
+    _find_standing(standings, p1)['gd'] -= s1 - s2
+    _find_standing(standings, p2)['gd'] -= s2 - s1
+
 
 @app.route('/record/<group>/<int:index>', methods=['POST'])
 def record_score(group: str, index: int):
@@ -102,8 +119,7 @@ def record_score(group: str, index: int):
         return redirect(url_for('tournament_view'))
 
     match = schedule[index]
-    if match['score1'] is not None:
-        return redirect(url_for('tournament_view'))
+    _revert_result(match, standings)
 
     try:
         match['score1'] = int(request.form.get('score1'))
@@ -124,6 +140,12 @@ def tournament_view():
         return redirect(url_for('index'))
     players = session.get('players', [])
     return render_template('tournament.html', players=players, **t)
+
+
+@app.route('/reset', methods=['POST'])
+def reset():
+    session.clear()
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
