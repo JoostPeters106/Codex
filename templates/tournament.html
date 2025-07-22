@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Tournament Started</h1>
+
+    <section>
+        <h2>Players</h2>
+        <ul>
+            {% for p in players %}
+            <li>{{ p }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Group A</h2>
+        <p>{{ ', '.join(group_a) }}</p>
+        <h3>Matches</h3>
+        <ul>
+            {% for m in schedule_a %}
+            <li>{{ m[0] }} vs {{ m[1] }}</li>
+            {% endfor %}
+        </ul>
+        <h3>Standings</h3>
+        <table>
+            <tr><th>Player</th><th>Points</th><th>GD</th></tr>
+            {% for s in standings_a %}
+            <tr><td>{{ s.name }}</td><td>{{ s.points }}</td><td>{{ s.gd }}</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+
+    <section>
+        <h2>Group B</h2>
+        <p>{{ ', '.join(group_b) }}</p>
+        <h3>Matches</h3>
+        <ul>
+            {% for m in schedule_b %}
+            <li>{{ m[0] }} vs {{ m[1] }}</li>
+            {% endfor %}
+        </ul>
+        <h3>Standings</h3>
+        <table>
+            <tr><th>Player</th><th>Points</th><th>GD</th></tr>
+            {% for s in standings_b %}
+            <tr><td>{{ s.name }}</td><td>{{ s.points }}</td><td>{{ s.gd }}</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+</body>
+</html>

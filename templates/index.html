@@ -26,6 +26,9 @@
             </li>
             {% endfor %}
         </ul>
+        <form action="{{ url_for('start_tournament') }}" method="post">
+            <button type="submit">Start Tournament</button>
+        </form>
         {% else %}
         <p>No players added yet.</p>
         {% endif %}
