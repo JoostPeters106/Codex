@@ -22,11 +22,26 @@
         <h2>Group A</h2>
         <p>{{ ', '.join(group_a) }}</p>
         <h3>Matches</h3>
-        <ul>
+        <table>
+            <tr><th>Match</th><th>Score</th></tr>
             {% for m in schedule_a %}
-            <li>{{ m[0] }} vs {{ m[1] }}</li>
+            <tr>
+                <td>{{ m.p1 }} vs {{ m.p2 }}</td>
+                <td>
+                    {% if m.score1 is none %}
+                    <form action="{{ url_for('record_score', group='A', index=loop.index0) }}" method="post" style="display:inline">
+                        <input type="number" name="score1" min="0" required style="width:3em;">
+                        -
+                        <input type="number" name="score2" min="0" required style="width:3em;">
+                        <button type="submit" class="styled-button">Save</button>
+                    </form>
+                    {% else %}
+                    {{ m.score1 }} - {{ m.score2 }}
+                    {% endif %}
+                </td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
         <h3>Standings</h3>
         <table>
             <tr><th>Player</th><th>Points</th><th>GD</th></tr>
@@ -40,11 +55,26 @@
         <h2>Group B</h2>
         <p>{{ ', '.join(group_b) }}</p>
         <h3>Matches</h3>
-        <ul>
+        <table>
+            <tr><th>Match</th><th>Score</th></tr>
             {% for m in schedule_b %}
-            <li>{{ m[0] }} vs {{ m[1] }}</li>
+            <tr>
+                <td>{{ m.p1 }} vs {{ m.p2 }}</td>
+                <td>
+                    {% if m.score1 is none %}
+                    <form action="{{ url_for('record_score', group='B', index=loop.index0) }}" method="post" style="display:inline">
+                        <input type="number" name="score1" min="0" required style="width:3em;">
+                        -
+                        <input type="number" name="score2" min="0" required style="width:3em;">
+                        <button type="submit" class="styled-button">Save</button>
+                    </form>
+                    {% else %}
+                    {{ m.score1 }} - {{ m.score2 }}
+                    {% endif %}
+                </td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
         <h3>Standings</h3>
         <table>
             <tr><th>Player</th><th>Points</th><th>GD</th></tr>

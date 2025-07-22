@@ -35,8 +35,18 @@ def start_tournament():
     if not players:
         return redirect(url_for('index'))
     group_a, group_b = draw_groups(players.copy())
-    schedule_a = [(m.p1, m.p2) for m in schedule_round_robin(group_a)]
-    schedule_b = [(m.p1, m.p2) for m in schedule_round_robin(group_b)]
+    schedule_a = [{
+        'p1': m.p1,
+        'p2': m.p2,
+        'score1': None,
+        'score2': None,
+    } for m in schedule_round_robin(group_a)]
+    schedule_b = [{
+        'p1': m.p1,
+        'p2': m.p2,
+        'score1': None,
+        'score2': None,
+    } for m in schedule_round_robin(group_b)]
     standings_a = [{'name': p, 'points': 0, 'gd': 0} for p in group_a]
     standings_b = [{'name': p, 'points': 0, 'gd': 0} for p in group_b]
     session['tournament'] = {
@@ -47,6 +57,63 @@ def start_tournament():
         'standings_a': standings_a,
         'standings_b': standings_b,
     }
+    return redirect(url_for('tournament_view'))
+
+
+def _find_standing(standings, name):
+    for s in standings:
+        if s['name'] == name:
+            return s
+    raise ValueError('player not found')
+
+
+def _apply_result(match, standings):
+    s1 = match['score1']
+    s2 = match['score2']
+    p1 = match['p1']
+    p2 = match['p2']
+    if s1 is None or s2 is None:
+        return
+    if s1 > s2:
+        _find_standing(standings, p1)['points'] += 3
+    elif s2 > s1:
+        _find_standing(standings, p2)['points'] += 3
+    else:
+        _find_standing(standings, p1)['points'] += 1
+        _find_standing(standings, p2)['points'] += 1
+    _find_standing(standings, p1)['gd'] += s1 - s2
+    _find_standing(standings, p2)['gd'] += s2 - s1
+
+
+@app.route('/record/<group>/<int:index>', methods=['POST'])
+def record_score(group: str, index: int):
+    t = session.get('tournament')
+    if not t:
+        return redirect(url_for('index'))
+
+    schedule_key = 'schedule_a' if group == 'A' else 'schedule_b'
+    standings_key = 'standings_a' if group == 'A' else 'standings_b'
+
+    schedule = t.get(schedule_key)
+    standings = t.get(standings_key)
+    if schedule is None or standings is None:
+        return redirect(url_for('tournament_view'))
+    if not (0 <= index < len(schedule)):
+        return redirect(url_for('tournament_view'))
+
+    match = schedule[index]
+    if match['score1'] is not None:
+        return redirect(url_for('tournament_view'))
+
+    try:
+        match['score1'] = int(request.form.get('score1'))
+        match['score2'] = int(request.form.get('score2'))
+    except (TypeError, ValueError):
+        match['score1'] = match['score2'] = None
+        return redirect(url_for('tournament_view'))
+
+    _apply_result(match, standings)
+    session['tournament'] = t
     return redirect(url_for('tournament_view'))
 
 
