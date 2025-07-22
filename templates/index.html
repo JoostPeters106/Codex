@@ -11,10 +11,27 @@
 
     <section id="player-input-section">
         <h2>Enter Player Names</h2>
-        <form id="player-form">
-            <div id="player-inputs"></div>
+        <form action="{{ url_for('add_player') }}" method="post">
+            <input type="text" name="player_name" placeholder="Player name">
+            <button type="submit">Add</button>
+        </form>
+        {% if players %}
+        <ul id="player-list">
+            {% for p in players %}
+            <li>
+                {{ p }}
+                <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post" style="display:inline">
+                    <button type="submit">Remove</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <form action="{{ url_for('start_tournament') }}" method="post">
             <button type="submit">Start Tournament</button>
         </form>
+        {% else %}
+        <p>No players added yet.</p>
+        {% endif %}
     </section>
 
     <section id="group-stage" style="display:none">
@@ -29,6 +46,5 @@
         <div id="knockout-bracket"></div>
     </section>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
