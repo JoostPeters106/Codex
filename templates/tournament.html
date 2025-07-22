@@ -58,34 +58,6 @@
         </table>
     </section>
 
-    <section>
-        <h2>Group B</h2>
-        <p>{{ ', '.join(group_b) }}</p>
-        <h3>Matches</h3>
-        <table>
-            <tr><th>Match</th><th>Score</th></tr>
-            {% for m in schedule_b %}
-            <tr>
-                <td>{{ m.p1 }} vs {{ m.p2 }}</td>
-                <td>
-                    <form action="{{ url_for('record_score', group='B', index=loop.index0) }}" method="post" style="display:inline">
-                        <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
-                        -
-                        <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
-                        <button type="submit" class="styled-button">Save</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <h3>Standings</h3>
-        <table>
-            <tr><th>Player</th><th>Points</th><th>GD</th></tr>
-            {% for s in standings_b %}
-            <tr><td>{{ s.name }}</td><td>{{ s.points }}</td><td>{{ s.gd }}</td></tr>
-            {% endfor %}
-        </table>
-    </section>
     <script>
         const resetBtn = document.getElementById('reset-btn');
         const modal = document.getElementById('confirm-modal');

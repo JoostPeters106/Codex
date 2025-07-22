@@ -15,9 +15,10 @@ class Standing:
     points: int = 0
     gd: int = 0
 
-def draw_groups(players: List[str]):
+def draw_group(players: List[str]) -> List[str]:
+    """Randomly shuffle players into a single group."""
     random.shuffle(players)
-    return players[:4], players[4:]
+    return players
 
 def schedule_round_robin(players: List[str]) -> List[Match]:
     matches = []
@@ -111,25 +112,19 @@ def main():
         name = input(f"Enter player {i+1} name: ").strip()
         players.append(name)
 
-    group_a, group_b = draw_groups(players)
+    group_a = draw_group(players)
     print(f"\nGroup A: {', '.join(group_a)}")
-    print(f"Group B: {', '.join(group_b)}")
 
     matches_a = schedule_round_robin(group_a)
-    matches_b = schedule_round_robin(group_b)
     standings_a = [Standing(name) for name in group_a]
-    standings_b = [Standing(name) for name in group_b]
 
     print("\n--- Group Stage ---")
     print("\nGroup A matches")
     play_group(matches_a, standings_a)
-    print("\nGroup B matches")
-    play_group(matches_b, standings_b)
 
     display_standings("Group A Standings", standings_a)
-    display_standings("Group B Standings", standings_b)
 
-    combined = standings_a + standings_b
+    combined = standings_a
     knockout_bracket(combined)
 
 if __name__ == "__main__":
