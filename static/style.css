@@ -34,6 +34,19 @@ button {
     margin-top: 1em;
 }
 
+#player-list {
+    list-style: none;
+    padding: 0;
+}
+
+#player-list li {
+    margin-bottom: 0.5em;
+}
+
+#player-list button {
+    margin-left: 0.5em;
+}
+
 @media (max-width: 600px) {
     body {
         padding: 0.5em;
