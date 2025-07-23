@@ -43,10 +43,13 @@ body {
   background: var(--son-navy);
   color: var(--son-white);
   padding: 0.5em 1em;
+  height: 120px;
 }
 
 .site-header img {
-  height: 60px;
+  height: 100%;
+  align-self: stretch;
+  margin: -0.5em -1em;
 }
 
 h1, h2, h3 {
