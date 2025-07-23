@@ -69,7 +69,7 @@
                     <strong>{{ t.name }}</strong> - {{ t.created_at }}<br>
                     <span class="caption">Players in tournament: {{ t.players|length }}</span>
                     <div class="actions">
-                        <a href="{{ url_for('tournament_view', t_id=t.id) }}" class="styled-button secondary-button">Open</a>
+                        <a href="{{ url_for('tournament_view', t_id=t.id) }}" class="styled-button secondary-button" style="margin-top: 0px">Open</a>
                         {% if session.admin_logged_in %}
                         <form action="{{ url_for('delete_tournament', t_id=t.id) }}" method="post" style="display:inline">
                             <button type="submit" class="styled-button danger-button">Delete</button>

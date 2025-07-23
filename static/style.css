@@ -727,7 +727,7 @@ tr:last-child td {
   }
 }
 
-/* Knockout Stage Centering */
+/* Centering */
 .knockout-container {
   display: flex;
   flex-direction: column;

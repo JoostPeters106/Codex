@@ -14,7 +14,7 @@
         <h1>Knockout Stage</h1>
         <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     </header>
-    <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button" style="margin-bottom:1em;display:inline-block;">Back to Group Stage</a>
+    <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button" style="margin-bottom:1em;display:inline-block; width: 200px;" >Back to Group Stage</a>
     <div class="knockout-container">
         {% if bracket %}
         <section class="card" style="width: 50%;">
