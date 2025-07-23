@@ -537,53 +537,6 @@ tr:last-child td {
   margin: 1rem 0;
 }
 
-/* Modal Styling */
-#confirm-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 16, 38, 0.8);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-#confirm-modal > div {
-  background: var(--white);
-  padding: 2rem;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-  animation: modalSlideIn 0.3s ease-out;
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-#confirm-modal p {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.125rem;
-  color: var(--text-primary);
-}
-
-#confirm-modal .styled-button {
-  margin: 0 0.5rem;
-}
 
 /* Footer Styling */
 .site-footer {
