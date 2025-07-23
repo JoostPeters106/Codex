@@ -20,24 +20,72 @@
         <section class="card" style="width: 50%;">
             <h2>Quarterfinals</h2>
             <table>
-                <tr><th>Match</th></tr>
+                <tr><th>Match</th><th>Score</th></tr>
                 {% for m in bracket.qfs %}
-                <tr><td>{{ m.p1 }} vs {{ m.p2 }}</td></tr>
+                <tr>
+                    <td>{{ m.p1 }} vs {{ m.p2 }}</td>
+                    <td>
+                        {% if session.admin_logged_in %}
+                        <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='qfs', index=loop.index0) }}" method="post">
+                            <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
+                            -
+                            <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
+                            <button type="submit" class="styled-button primary-button">Save</button>
+                        </form>
+                        {% else %}
+                            {{ m.score1 if m.score1 is not none else '' }} - {{ m.score2 if m.score2 is not none else '' }}
+                        {% endif %}
+                    </td>
+                </tr>
                 {% endfor %}
             </table>
         </section>
         <section class="card" style="width: 50%;">
             <h2>Semifinals</h2>
             <table>
-                <tr><th>Match</th></tr>
+                <tr><th>Match</th><th>Score</th></tr>
                 {% for m in bracket.sfs %}
-                <tr><td>{{ m.p1 }} vs {{ m.p2 }}</td></tr>
+                <tr>
+                    <td>{{ m.p1 }} vs {{ m.p2 }}</td>
+                    <td>
+                        {% if session.admin_logged_in and m.p1 and m.p2 %}
+                        <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='sfs', index=loop.index0) }}" method="post">
+                            <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
+                            -
+                            <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
+                            <button type="submit" class="styled-button primary-button">Save</button>
+                        </form>
+                        {% else %}
+                            {{ m.score1 if m.score1 is not none else '' }} - {{ m.score2 if m.score2 is not none else '' }}
+                        {% endif %}
+                    </td>
+                </tr>
                 {% endfor %}
             </table>
         </section>
         <section class="card" style="width: 50%;">
             <h2>Final</h2>
-            <p>{{ bracket.final.p1 }} vs {{ bracket.final.p2 }}</p>
+            <table>
+                <tr><th>Match</th><th>Score</th></tr>
+                <tr>
+                    <td>{{ bracket.final.p1 }} vs {{ bracket.final.p2 }}</td>
+                    <td>
+                        {% if session.admin_logged_in and bracket.final.p1 and bracket.final.p2 %}
+                        <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='final', index=0) }}" method="post">
+                            <input type="number" name="score1" min="0" required style="width:3em;" value="{{ bracket.final.score1 if bracket.final.score1 is not none }}">
+                            -
+                            <input type="number" name="score2" min="0" required style="width:3em;" value="{{ bracket.final.score2 if bracket.final.score2 is not none }}">
+                            <button type="submit" class="styled-button primary-button">Save</button>
+                        </form>
+                        {% else %}
+                            {{ bracket.final.score1 if bracket.final.score1 is not none else '' }} - {{ bracket.final.score2 if bracket.final.score2 is not none else '' }}
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            {% if bracket.final.score1 is not none and bracket.final.score2 is not none %}
+            <p style="margin-top:0.5em;"><strong>Champion: {{ bracket.final.p1 if bracket.final.score1 >= bracket.final.score2 else bracket.final.p2 }}</strong></p>
+            {% endif %}
         </section>
         {% else %}
         <section class="card">
