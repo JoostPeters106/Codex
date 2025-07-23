@@ -78,9 +78,13 @@ def logout():
 @app.route('/')
 def index():
     players = session.get('players', [])
+    page = request.args.get('page', 1, type=int)
+    per_page = 3
     conn = get_db()
+    total = conn.execute('SELECT COUNT(*) FROM tournaments').fetchone()[0]
     rows = conn.execute(
-        "SELECT id, name, created_at, data FROM tournaments ORDER BY id DESC"
+        "SELECT id, name, created_at, data FROM tournaments ORDER BY id DESC LIMIT ? OFFSET ?",
+        (per_page, (page - 1) * per_page),
     ).fetchall()
     conn.close()
     tournaments = []
@@ -94,8 +98,15 @@ def index():
                 "players": data.get("players", []),
             }
         )
+    has_next = page * per_page < total
+    has_prev = page > 1
     return render_template(
-        'index.html', players=players, tournaments=tournaments
+        'index.html',
+        players=players,
+        tournaments=tournaments,
+        page=page,
+        has_next=has_next,
+        has_prev=has_prev,
     )
 
 

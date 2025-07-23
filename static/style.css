@@ -448,6 +448,13 @@ tr:last-child td {
   flex-wrap: wrap;
 }
 
+.pagination {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
 /* Add Player Form */
 .add-player-form {
   display: flex;
