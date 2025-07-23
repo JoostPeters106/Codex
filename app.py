@@ -55,6 +55,11 @@ def inject_tournament_name():
     return dict(current_tournament_name=name)
 
 
+@app.context_processor
+def inject_current_year():
+    return {'current_year': datetime.utcnow().year}
+
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username', '')

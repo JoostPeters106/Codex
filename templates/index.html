@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darts Tournament Manager</title>
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
-    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -29,27 +26,27 @@
     {% endif %}
 </header>
 
-<body style="height: 100%; flex: 1">
+<body>
     <div class="index-layout">
-        <section id="new-tournament" class="card" style="width: 80%;">
+        <section id="new-tournament" class="card">
             <h2>New Tournament</h2>
             {% if session.admin_logged_in %}
             <form action="{{ url_for('set_title') }}" method="post" class="add-player-form">
-                <input type="text" class="styled-input" name="tournament_title" placeholder="Tournament title" value="{{ session.tournament_title }}" style="width: 80%">
-                <button type="submit" class="styled-button primary-button" style="margin-top: 0.25em;">Set Title</button>
+                <input type="text" class="styled-input" name="tournament_title" placeholder="Tournament title" value="{{ session.tournament_title }}">
+                <button type="submit" class="styled-button primary-button">Set Title</button>
             </form>
             <form action="{{ url_for('add_player') }}" method="post" class="add-player-form">
-                <input type="text" class="styled-input" name="player_name" placeholder="Player name" style="width: 80%">
-                <button type="submit" class="styled-button primary-button" style="margin-top: 0.25em;">Add</button>
+                <input type="text" class="styled-input" name="player_name" placeholder="Player name">
+                <button type="submit" class="styled-button primary-button">Add</button>
             </form>
 
             <div class="player-container">
                 {% if players %}
-                <ul id="player-list" style="border: 1px solid #000; padding: 10px; list-style-type: none; border-radius: 8px;">
+                <ul id="player-list">
                     {% for p in players %}
-                    <li style="border-bottom: 1px solid #ccc; padding: 5px 0;">
+                    <li>
                         {{ p }}
-                        <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post" style="display:inline; float: right;">
+                        <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post">
                             <button type="submit" class="styled-button danger-button">Remove</button>
                         </form>
                     </li>
@@ -67,18 +64,18 @@
             {% endif %}
         </section>
 
-        <section id="past-tournaments" class="card" style="width: 85%;">
-            <h2 style:"text-align: left;">Past Tournaments</h2>
+        <section id="past-tournaments" class="card">
+            <h2>Past Tournaments</h2>
             {% if tournaments %}
             <ul class="tournament-list">
                 {% for t in tournaments %}
-                <li style="border-bottom: 1px solid #ccc;">
+                <li>
                     <strong>{{ t.name }}</strong> - {{ t.created_at }}<br>
                     <span class="caption">Players in tournament: {{ t.players|length }}</span>
                     <div class="actions">
-                        <a href="{{ url_for('tournament_view', t_id=t.id) }}" class="styled-button secondary-button" style="margin-top: 0px">Open</a>
+                        <a href="{{ url_for('tournament_view', t_id=t.id) }}" class="styled-button secondary-button">Open</a>
                         {% if session.admin_logged_in %}
-                        <form action="{{ url_for('delete_tournament', t_id=t.id) }}" method="post" style="display:inline">
+                        <form action="{{ url_for('delete_tournament', t_id=t.id) }}" method="post">
                             <button type="submit" class="styled-button danger-button">Delete</button>
                         </form>
                         {% endif %}
@@ -92,17 +89,6 @@
         </section>
     </div>
 
-    <section id="group-stage" style="display:none">
-        <h2>Group Stage</h2>
-        <div id="groups"></div>
-        <div id="group-matches"></div>
-        <button id="start-knockout" disabled>Start Knockout Phase</button>
-    </section>
-
-    <section id="knockout-stage" style="display:none">
-        <h2>Knockout Stage</h2>
-        <div id="knockout-bracket"></div>
-    </section>
 </body>
 
 <footer class="site-footer">
