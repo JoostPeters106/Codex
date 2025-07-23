@@ -38,10 +38,20 @@ def index():
     players = session.get('players', [])
     conn = get_db()
     rows = conn.execute(
-        "SELECT id, name, created_at FROM tournaments ORDER BY id DESC"
+        "SELECT id, name, created_at, data FROM tournaments ORDER BY id DESC"
     ).fetchall()
     conn.close()
-    tournaments = [dict(r) for r in rows]
+    tournaments = []
+    for r in rows:
+        data = json.loads(r["data"])
+        tournaments.append(
+            {
+                "id": r["id"],
+                "name": r["name"],
+                "created_at": r["created_at"],
+                "players": data.get("players", []),
+            }
+        )
     return render_template(
         'index.html', players=players, tournaments=tournaments
     )
