@@ -1,27 +1,53 @@
-/* SON Darts Championship Styles */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Roboto:wght@400;700&family=Roboto+Condensed:wght@700&display=swap');
+/* Google font imported from HTML */
+
+.roboto-condensed-body {
+  font-family: "Roboto Condensed", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.roboto-condensed-heading {
+  font-family: "Roboto Condensed", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
 
 :root {
-  --son-navy: #001026;
-  --son-yellow: #FACA07;
-  --son-blue: #2B76E1;
-  --son-red: #F70001;
-  --son-green: #00874A;
+  --son-navy: #001126;
+  --son-yellow: #FFC72C;
+  --son-blue: #2978B5;
+  --son-red: #C8102E;
+  --son-green: #34A853;
+  --son-white: #FFFFFF;
+  --son-black: #000000;
   --son-grey: #B3B2B4;
   --son-radius: 8px;
   --son-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 body {
-  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Roboto Condensed', 'Helvetica Neue', Arial, sans-serif;
   margin: 0;
   padding: 1em;
-  background: #fff;
+  background: var(--son-white);
   color: var(--son-navy);
 }
 
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2em;
+}
+
+.site-header img {
+  height: 60px;
+}
+
 h1, h2, h3 {
-  font-family: 'Cinzel', 'Trajan Pro', Georgia, serif;
+  font-family: 'Roboto Condensed', 'Helvetica Neue', Arial, sans-serif;
   margin-top: 0;
   text-align: center;
 }
@@ -45,18 +71,6 @@ h3 {
 .index-layout, .tournament-layout {
   display: flex;
   gap: 4%;
-}
-
-#index-layout {
-  max-width: 72rem;
-}
-
-#new-tournament {
-  width: 28%;
-}
-
-#past-tournaments {
-  width: 68%;
 }
 
 .tournament-sidebar {
@@ -83,7 +97,7 @@ th, td {
 }
 
 .card {
-  background: #fff;
+  background: var(--son-white);
   padding: 1.5em;
   border-radius: var(--son-radius);
   box-shadow: var(--son-shadow);
@@ -108,8 +122,8 @@ th, td {
 }
 
 .styled-button:hover {
-  background-color: #e2b208; /* darken 8% */
-  color: #fff;
+  background-color: #e0b625; /* darken */
+  color: var(--son-white);
   transform: translateY(-1px) scale(1.03);
 }
 
@@ -142,7 +156,7 @@ th, td {
 
 .caption {
   font-size: 14px;
-  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Roboto Condensed', 'Helvetica Neue', Arial, sans-serif;
   font-style: italic;
 }
 
@@ -158,4 +172,3 @@ th, td {
     width: 100%;
   }
 }
-

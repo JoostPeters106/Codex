@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tournament</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Tournament {{ t_id }}</h1>
+    <header class="site-header">
+        <h1>Tournament {{ t_id }}</h1>
+        <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
+    </header>
     <form id="reset-form" action="{{ url_for('reset') }}" method="post">
         <button id="reset-btn" type="button" class="styled-button">Go back to start</button>
     </form>
