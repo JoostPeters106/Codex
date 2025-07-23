@@ -8,6 +8,7 @@ class Match:
     p2: str
     score1: Optional[int] = None
     score2: Optional[int] = None
+    round: int = 0
 
 @dataclass
 class Standing:
@@ -21,11 +22,21 @@ def draw_group(players: List[str]) -> List[str]:
     return players
 
 def schedule_round_robin(players: List[str]) -> List[Match]:
-    matches = []
-    for i in range(len(players)):
-        for j in range(i + 1, len(players)):
-            matches.append(Match(players[i], players[j]))
-    return matches
+    """Create a round-robin schedule returning matches with round numbers."""
+    players = players.copy()
+    if len(players) % 2 == 1:
+        players.append(None)
+    n = len(players)
+    rounds: List[Match] = []
+    for r in range(n - 1):
+        for i in range(n // 2):
+            p1 = players[i]
+            p2 = players[n - 1 - i]
+            if p1 is not None and p2 is not None:
+                rounds.append(Match(p1, p2, round=r + 1))
+        # rotate list except the first element
+        players = [players[0]] + players[-1:] + players[1:-1]
+    return rounds
 
 def input_score(prompt: str) -> int:
     while True:

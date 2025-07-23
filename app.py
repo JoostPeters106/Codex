@@ -87,6 +87,7 @@ def start_tournament():
         'p2': m.p2,
         'score1': None,
         'score2': None,
+        'round': m.round,
     } for m in schedule_round_robin(group_a)]
     standings_a = [{'name': p, 'points': 0, 'gd': 0} for p in group_a]
 
@@ -211,11 +212,17 @@ def tournament_view(t_id: int):
     data = json.loads(row['data'])
     standings_a = data.get('standings_a', [])
     standings_a = sorted(standings_a, key=lambda x: (-x['points'], -x['gd']))
+
+    schedule_a = data.get('schedule_a', [])
+    rounds = {}
+    for m in schedule_a:
+        rounds.setdefault(m.get('round', 1), []).append(m)
+    schedule_by_round = [rounds[r] for r in sorted(rounds)]
     return render_template(
         'tournament.html',
         players=data.get('players', []),
         group_a=data.get('group_a', []),
-        schedule_a=data.get('schedule_a', []),
+        schedule_rounds=schedule_by_round,
         standings_a=standings_a,
         t_id=t_id,
     )
