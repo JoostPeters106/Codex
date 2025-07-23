@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knockout Stage</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <h1>Knockout Stage</h1>
+        <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
+    </header>
+    <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button" style="margin-bottom:1em;display:inline-block;">Back to Group Stage</a>
+
+    <section class="card">
+        <h2>Quarterfinals</h2>
+        <table>
+            <tr><th>Match</th></tr>
+            {% for m in bracket.qfs %}
+            <tr><td>{{ m.p1 }} vs {{ m.p2 }}</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+    <section class="card">
+        <h2>Semifinals</h2>
+        <table>
+            <tr><th>Match</th></tr>
+            {% for m in bracket.sfs %}
+            <tr><td>{{ m.p1 }} vs {{ m.p2 }}</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+    <section class="card">
+        <h2>Final</h2>
+        <p>{{ bracket.final.p1 }} vs {{ bracket.final.p2 }}</p>
+    </section>
+</body>
+</html>

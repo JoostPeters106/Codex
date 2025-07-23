@@ -154,6 +154,35 @@ def _revert_result(match, standings):
     _find_standing(standings, p2)['gd'] -= s2 - s1
 
 
+def _compute_knockout_bracket(sorted_standings):
+    """Return knockout bracket pairs for top 7 players."""
+    if len(sorted_standings) < 7:
+        return None
+    players = [s['name'] for s in sorted_standings[:7]]
+    bye = players[0]
+    others = players[1:]
+    qfs = [
+        {'p1': others[0], 'p2': others[5]},
+        {'p1': others[1], 'p2': others[4]},
+        {'p1': others[2], 'p2': others[3]},
+    ]
+    sfs = [
+        {
+            'p1': bye,
+            'p2': f"Winner of {qfs[2]['p1']} vs {qfs[2]['p2']}"
+        },
+        {
+            'p1': f"Winner of {qfs[0]['p1']} vs {qfs[0]['p2']}",
+            'p2': f"Winner of {qfs[1]['p1']} vs {qfs[1]['p2']}"
+        },
+    ]
+    final = {
+        'p1': 'Winner of Semifinal 1',
+        'p2': 'Winner of Semifinal 2'
+    }
+    return {'qfs': qfs, 'sfs': sfs, 'final': final}
+
+
 @app.route('/tournament/<int:t_id>/record/<group>/<int:index>', methods=['POST'])
 def record_score(t_id: int, group: str, index: int):
     if group != 'A':
@@ -226,6 +255,20 @@ def tournament_view(t_id: int):
         standings_a=standings_a,
         t_id=t_id,
     )
+
+
+@app.route('/tournament/<int:t_id>/knockout')
+def knockout_view(t_id: int):
+    conn = get_db()
+    row = conn.execute('SELECT data FROM tournaments WHERE id=?', (t_id,)).fetchone()
+    conn.close()
+    if row is None:
+        return redirect(url_for('index'))
+    data = json.loads(row['data'])
+    standings_a = data.get('standings_a', [])
+    standings_a = sorted(standings_a, key=lambda x: (-x['points'], -x['gd']))
+    bracket = _compute_knockout_bracket(standings_a)
+    return render_template('knockout.html', bracket=bracket, t_id=t_id)
 
 
 @app.route('/delete/<int:t_id>', methods=['POST'])
