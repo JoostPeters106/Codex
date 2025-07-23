@@ -26,6 +26,7 @@
         </div>
     </div>
 
+
     <div class="tournament-layout">
         <div class="tournament-sidebar">
             <section class="players card">
@@ -73,6 +74,8 @@
             {% endfor %}
         </div>
     </div>
+
+    <a href="{{ url_for('knockout_view', t_id=t_id) }}" class="styled-button primary-button" style="margin-top:1em; display:inline-block;">Go to Knockout</a>
 
     <script>
         const resetBtn = document.getElementById('reset-btn');
