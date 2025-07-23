@@ -11,7 +11,7 @@
 </head>
 <body>
     <header class="site-header">
-        <h1>Knockout Stage</h1>
+        <h1>{{ current_tournament_name }}</h1>
         <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     </header>
     <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button" style="margin-bottom:1em;display:inline-block; width: 200px;" >Back to Group Stage</a>

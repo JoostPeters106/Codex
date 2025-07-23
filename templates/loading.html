@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="3;url={{ url_for('tournament_view', t_id=t_id) }}">
+    <title>Starting Tournament</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="loading-container">
+        <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading">
+    </div>
+</body>
+</html>

@@ -38,6 +38,23 @@ app.secret_key = 'replace-this-secret'
 app.permanent_session_lifetime = timedelta(days=365)
 
 
+@app.context_processor
+def inject_tournament_name():
+    name = None
+    tid = session.get('current_tournament_id')
+    if tid:
+        conn = get_db()
+        row = conn.execute('SELECT name FROM tournaments WHERE id=?', (tid,)).fetchone()
+        conn.close()
+        if row:
+            name = row['name']
+    else:
+        title = session.get('tournament_title')
+        if title:
+            name = title
+    return dict(current_tournament_name=name)
+
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username', '')
@@ -100,6 +117,18 @@ def remove_player(index: int):
     return redirect(url_for('index'))
 
 
+@app.route('/set_title', methods=['POST'])
+def set_title():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('index'))
+    title = request.form.get('tournament_title', '').strip()
+    if title:
+        session['tournament_title'] = title
+    else:
+        session.pop('tournament_title', None)
+    return redirect(url_for('index'))
+
+
 @app.route('/start', methods=['POST'])
 def start_tournament():
     if not session.get('admin_logged_in'):
@@ -125,7 +154,9 @@ def start_tournament():
     }
 
     conn = get_db()
-    name = f"Tournament {datetime.utcnow().isoformat(timespec='seconds')}"
+    name = session.pop('tournament_title', '').strip()
+    if not name:
+        name = f"Tournament {datetime.utcnow().isoformat(timespec='seconds')}"
     cur = conn.execute(
         "INSERT INTO tournaments (name, created_at, data) VALUES (?, ?, ?)",
         (name, datetime.utcnow().isoformat(timespec='seconds'), json.dumps(tournament_data)),
@@ -135,7 +166,8 @@ def start_tournament():
     conn.close()
 
     session['current_tournament_id'] = tid
-    return redirect(url_for('tournament_view', t_id=tid))
+    session.pop('players', None)
+    return render_template('loading.html', t_id=tid)
 
 
 def _find_standing(standings, name):
@@ -262,11 +294,12 @@ def tournament_current():
 @app.route('/tournament/<int:t_id>')
 def tournament_view(t_id: int):
     conn = get_db()
-    row = conn.execute('SELECT data FROM tournaments WHERE id=?', (t_id,)).fetchone()
+    row = conn.execute('SELECT name, data FROM tournaments WHERE id=?', (t_id,)).fetchone()
     conn.close()
     if row is None:
         return redirect(url_for('index'))
     data = json.loads(row['data'])
+    session['current_tournament_id'] = t_id
     standings_a = data.get('standings_a', [])
     standings_a = sorted(standings_a, key=lambda x: (-x['points'], -x['gd']))
 
@@ -288,11 +321,12 @@ def tournament_view(t_id: int):
 @app.route('/tournament/<int:t_id>/knockout')
 def knockout_view(t_id: int):
     conn = get_db()
-    row = conn.execute('SELECT data FROM tournaments WHERE id=?', (t_id,)).fetchone()
+    row = conn.execute('SELECT name, data FROM tournaments WHERE id=?', (t_id,)).fetchone()
     conn.close()
     if row is None:
         return redirect(url_for('index'))
     data = json.loads(row['data'])
+    session['current_tournament_id'] = t_id
     standings_a = data.get('standings_a', [])
     standings_a = sorted(standings_a, key=lambda x: (-x['points'], -x['gd']))
     bracket = _compute_knockout_bracket(standings_a)
