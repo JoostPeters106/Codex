@@ -213,30 +213,36 @@ def _revert_result(match, standings):
 
 
 def _compute_knockout_bracket(sorted_standings):
-    """Return knockout bracket pairs for top 7 players."""
+    """Return knockout bracket pairs for top 7 players with empty scores."""
     if len(sorted_standings) < 7:
         return None
     players = [s['name'] for s in sorted_standings[:7]]
     bye = players[0]
     others = players[1:]
     qfs = [
-        {'p1': others[0], 'p2': others[5]},
-        {'p1': others[1], 'p2': others[4]},
-        {'p1': others[2], 'p2': others[3]},
+        {'p1': others[0], 'p2': others[5], 'score1': None, 'score2': None},
+        {'p1': others[1], 'p2': others[4], 'score1': None, 'score2': None},
+        {'p1': others[2], 'p2': others[3], 'score1': None, 'score2': None},
     ]
     sfs = [
         {
             'p1': bye,
-            'p2': f"Winner of {qfs[2]['p1']} vs {qfs[2]['p2']}"
+            'p2': f"Winner of {qfs[2]['p1']} vs {qfs[2]['p2']}",
+            'score1': None,
+            'score2': None,
         },
         {
             'p1': f"Winner of {qfs[0]['p1']} vs {qfs[0]['p2']}",
-            'p2': f"Winner of {qfs[1]['p1']} vs {qfs[1]['p2']}"
+            'p2': f"Winner of {qfs[1]['p1']} vs {qfs[1]['p2']}",
+            'score1': None,
+            'score2': None,
         },
     ]
     final = {
         'p1': 'Winner of Semifinal 1',
-        'p2': 'Winner of Semifinal 2'
+        'p2': 'Winner of Semifinal 2',
+        'score1': None,
+        'score2': None,
     }
     return {'qfs': qfs, 'sfs': sfs, 'final': final}
 
@@ -283,6 +289,73 @@ def record_score(t_id: int, group: str, index: int):
     return redirect(url_for('tournament_view', t_id=t_id))
 
 
+@app.route('/tournament/<int:t_id>/record_knockout/<stage>/<int:index>', methods=['POST'])
+def record_knockout_score(t_id: int, stage: str, index: int):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('knockout_view', t_id=t_id))
+
+    conn = get_db()
+    row = conn.execute("SELECT data FROM tournaments WHERE id=?", (t_id,)).fetchone()
+    if row is None:
+        conn.close()
+        return redirect(url_for('index'))
+    data = json.loads(row['data'])
+    bracket = data.get('knockout')
+    if not bracket:
+        conn.close()
+        return redirect(url_for('knockout_view', t_id=t_id))
+
+    if stage == 'qf':
+        matches = bracket.get('qfs', [])
+    elif stage == 'sf':
+        matches = bracket.get('sfs', [])
+    elif stage == 'final':
+        matches = [bracket.get('final')]
+    else:
+        conn.close()
+        return redirect(url_for('knockout_view', t_id=t_id))
+
+    if index < 0 or index >= len(matches) or matches[index] is None:
+        conn.close()
+        return redirect(url_for('knockout_view', t_id=t_id))
+
+    match = matches[index]
+
+    # Ensure players are known before recording scores for later rounds
+    if stage in {'sf', 'final'} and (
+        'Winner' in match['p1'] or 'Winner' in match['p2']
+    ):
+        conn.close()
+        return redirect(url_for('knockout_view', t_id=t_id))
+    try:
+        match['score1'] = int(request.form.get('score1'))
+        match['score2'] = int(request.form.get('score2'))
+    except (TypeError, ValueError):
+        match['score1'] = match['score2'] = None
+        conn.close()
+        return redirect(url_for('knockout_view', t_id=t_id))
+
+    if stage in {'qf', 'sf'}:
+        winner = match['p1'] if match['score1'] >= match['score2'] else match['p2']
+        if stage == 'qf':
+            if index == 0:
+                bracket['sfs'][1]['p1'] = winner
+            elif index == 1:
+                bracket['sfs'][1]['p2'] = winner
+            elif index == 2:
+                bracket['sfs'][0]['p2'] = winner
+        elif stage == 'sf':
+            if index == 0:
+                bracket['final']['p1'] = winner
+            elif index == 1:
+                bracket['final']['p2'] = winner
+
+    conn.execute("UPDATE tournaments SET data=? WHERE id=?", (json.dumps(data), t_id))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('knockout_view', t_id=t_id))
+
+
 @app.route('/tournament')
 def tournament_current():
     tid = session.get('current_tournament_id')
@@ -322,14 +395,21 @@ def tournament_view(t_id: int):
 def knockout_view(t_id: int):
     conn = get_db()
     row = conn.execute('SELECT name, data FROM tournaments WHERE id=?', (t_id,)).fetchone()
-    conn.close()
     if row is None:
+        conn.close()
         return redirect(url_for('index'))
     data = json.loads(row['data'])
-    session['current_tournament_id'] = t_id
     standings_a = data.get('standings_a', [])
     standings_a = sorted(standings_a, key=lambda x: (-x['points'], -x['gd']))
-    bracket = _compute_knockout_bracket(standings_a)
+
+    bracket = data.get('knockout')
+    if bracket is None:
+        bracket = _compute_knockout_bracket(standings_a)
+        data['knockout'] = bracket
+        conn.execute("UPDATE tournaments SET data=? WHERE id=?", (json.dumps(data), t_id))
+        conn.commit()
+    conn.close()
+    session['current_tournament_id'] = t_id
     return render_template('knockout.html', bracket=bracket, t_id=t_id)
 
 
