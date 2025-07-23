@@ -12,6 +12,15 @@ python app.py
 
 Then navigate to `http://localhost:5000/` to use the tournament manager.
 
+The main page allows an administrator to log in. Use the default credentials:
+
+```
+username: admin
+password: password
+```
+
+Only an authenticated admin can create or modify tournaments.
+
 ## CLI Usage
 
 A command-line implementation is also available. Run:

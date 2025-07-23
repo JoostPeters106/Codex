@@ -4,6 +4,9 @@ import json
 import sqlite3
 from datetime import datetime
 
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "password"
+
 
 DB_PATH = "tournaments.db"
 
@@ -33,6 +36,21 @@ init_db()
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'replace-this-secret'
 
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username', '')
+    password = request.form.get('password', '')
+    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        session['admin_logged_in'] = True
+    return redirect(url_for('index'))
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('index'))
+
 @app.route('/')
 def index():
     players = session.get('players', [])
@@ -59,6 +77,8 @@ def index():
 
 @app.route('/add', methods=['POST'])
 def add_player():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('index'))
     name = request.form.get('player_name', '').strip()
     if name:
         players = session.get('players', [])
@@ -69,6 +89,8 @@ def add_player():
 
 @app.route('/remove/<int:index>', methods=['POST'])
 def remove_player(index: int):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('index'))
     players = session.get('players', [])
     if 0 <= index < len(players):
         players.pop(index)
@@ -78,6 +100,8 @@ def remove_player(index: int):
 
 @app.route('/start', methods=['POST'])
 def start_tournament():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('index'))
     players = session.get('players', [])
     if not players:
         return redirect(url_for('index'))
@@ -185,6 +209,8 @@ def _compute_knockout_bracket(sorted_standings):
 
 @app.route('/tournament/<int:t_id>/record/<group>/<int:index>', methods=['POST'])
 def record_score(t_id: int, group: str, index: int):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('tournament_view', t_id=t_id))
     if group != 'A':
         return redirect(url_for('tournament_view', t_id=t_id))
 
@@ -273,6 +299,8 @@ def knockout_view(t_id: int):
 
 @app.route('/delete/<int:t_id>', methods=['POST'])
 def delete_tournament(t_id: int):
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('index'))
     conn = get_db()
     conn.execute('DELETE FROM tournaments WHERE id=?', (t_id,))
     conn.commit()
