@@ -16,6 +16,7 @@
     </header>
     <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button" style="margin-bottom:1em;display:inline-block;">Back to Group Stage</a>
 
+    {% if bracket %}
     <section class="card">
         <h2>Quarterfinals</h2>
         <table>
@@ -38,5 +39,10 @@
         <h2>Final</h2>
         <p>{{ bracket.final.p1 }} vs {{ bracket.final.p2 }}</p>
     </section>
+    {% else %}
+    <section class="card">
+        <p>Knockout bracket is not available yet.</p>
+    </section>
+    {% endif %}
 </body>
 </html>
