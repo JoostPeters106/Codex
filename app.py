@@ -218,38 +218,119 @@ def _revert_result(match, standings):
 
 
 def _compute_knockout_bracket(sorted_standings):
-    """Return knockout bracket pairs for top 7 players with empty scores."""
-    if len(sorted_standings) < 7:
+    """Create a knockout bracket for 4-12 players based on standings."""
+    seeds = [s['name'] for s in sorted_standings]
+    n = len(seeds)
+    if n < 4:
         return None
-    players = [s['name'] for s in sorted_standings[:7]]
-    bye = players[0]
-    others = players[1:]
-    qfs = [
-        {'p1': others[0], 'p2': others[5], 'score1': None, 'score2': None},
-        {'p1': others[1], 'p2': others[4], 'score1': None, 'score2': None},
-        {'p1': others[2], 'p2': others[3], 'score1': None, 'score2': None},
-    ]
-    sfs = [
-        {
-            'p1': bye,
-            'p2': f"Winner of {qfs[2]['p1']} vs {qfs[2]['p2']}",
-            'score1': None,
-            'score2': None,
-        },
-        {
-            'p1': f"Winner of {qfs[0]['p1']} vs {qfs[0]['p2']}",
-            'p2': f"Winner of {qfs[1]['p1']} vs {qfs[1]['p2']}",
-            'score1': None,
-            'score2': None,
-        },
-    ]
-    final = {
-        'p1': 'Winner of Semifinal 1',
-        'p2': 'Winner of Semifinal 2',
-        'score1': None,
-        'score2': None,
-    }
-    return {'qfs': qfs, 'sfs': sfs, 'final': final}
+
+    bracket = {'size': n, 'seeds': seeds}
+
+    # reduce players based on advancing rules
+    if n == 5:
+        seeds = seeds[:4]
+    elif n == 6:
+        seeds = seeds[:5]
+    elif n == 8:
+        seeds = seeds[:7]
+    elif n == 9:
+        seeds = seeds[:8]
+    elif n == 10:
+        seeds = seeds[:8]
+    elif n == 11:
+        seeds = seeds[:10]
+    elif n >= 12:
+        seeds = seeds[:12]
+
+    m = len(seeds)
+
+    playins = []
+    qfs = []
+    sfs = []
+
+    if m <= 4:
+        # direct semifinals
+        sfs = [
+            {'p1': seeds[0], 'p2': seeds[3], 'score1': None, 'score2': None},
+            {'p1': seeds[1], 'p2': seeds[2], 'score1': None, 'score2': None},
+        ]
+    elif m == 5:
+        playins = [
+            {'p1': seeds[3], 'p2': seeds[4], 'score1': None, 'score2': None}
+        ]
+        sfs = [
+            {
+                'p1': seeds[0],
+                'p2': f"Winner of {seeds[3]} vs {seeds[4]}",
+                'score1': None,
+                'score2': None,
+            },
+            {'p1': seeds[1], 'p2': seeds[2], 'score1': None, 'score2': None},
+        ]
+    elif m == 7:
+        qfs = [
+            {'p1': seeds[1], 'p2': seeds[6], 'score1': None, 'score2': None},
+            {'p1': seeds[2], 'p2': seeds[5], 'score1': None, 'score2': None},
+            {'p1': seeds[3], 'p2': seeds[4], 'score1': None, 'score2': None},
+        ]
+        sfs = [
+            {'p1': seeds[0], 'p2': None, 'score1': None, 'score2': None},
+            {'p1': None, 'p2': None, 'score1': None, 'score2': None},
+        ]
+    elif m == 8:
+        qfs = [
+            {'p1': seeds[0], 'p2': seeds[7], 'score1': None, 'score2': None},
+            {'p1': seeds[1], 'p2': seeds[6], 'score1': None, 'score2': None},
+            {'p1': seeds[2], 'p2': seeds[5], 'score1': None, 'score2': None},
+            {'p1': seeds[3], 'p2': seeds[4], 'score1': None, 'score2': None},
+        ]
+        sfs = [
+            {'p1': None, 'p2': None, 'score1': None, 'score2': None},
+            {'p1': None, 'p2': None, 'score1': None, 'score2': None},
+        ]
+    elif m == 10:
+        playins = [
+            {'p1': seeds[6], 'p2': seeds[9], 'score1': None, 'score2': None},
+            {'p1': seeds[7], 'p2': seeds[8], 'score1': None, 'score2': None},
+        ]
+        qfs = [
+            {'p1': seeds[0], 'p2': f"Winner of {seeds[7]} vs {seeds[8]}", 'score1': None, 'score2': None},
+            {'p1': seeds[1], 'p2': f"Winner of {seeds[6]} vs {seeds[9]}", 'score1': None, 'score2': None},
+            {'p1': seeds[2], 'p2': seeds[5], 'score1': None, 'score2': None},
+            {'p1': seeds[3], 'p2': seeds[4], 'score1': None, 'score2': None},
+        ]
+        sfs = [
+            {'p1': None, 'p2': None, 'score1': None, 'score2': None},
+            {'p1': None, 'p2': None, 'score1': None, 'score2': None},
+        ]
+    elif m == 12:
+        playins = [
+            {'p1': seeds[5], 'p2': seeds[10], 'score1': None, 'score2': None},
+            {'p1': seeds[6], 'p2': seeds[9], 'score1': None, 'score2': None},
+            {'p1': seeds[7], 'p2': seeds[8], 'score1': None, 'score2': None},
+            {'p1': seeds[11], 'p2': seeds[4], 'score1': None, 'score2': None},
+        ]
+        qfs = [
+            {'p1': seeds[0], 'p2': f"Winner of {seeds[7]} vs {seeds[8]}", 'score1': None, 'score2': None},
+            {'p1': seeds[1], 'p2': f"Winner of {seeds[6]} vs {seeds[9]}", 'score1': None, 'score2': None},
+            {'p1': seeds[2], 'p2': f"Winner of {seeds[5]} vs {seeds[10]}", 'score1': None, 'score2': None},
+            {'p1': seeds[3], 'p2': f"Winner of {seeds[11]} vs {seeds[4]}", 'score1': None, 'score2': None},
+        ]
+        sfs = [
+            {'p1': None, 'p2': None, 'score1': None, 'score2': None},
+            {'p1': None, 'p2': None, 'score1': None, 'score2': None},
+        ]
+
+    final = {'p1': 'Winner of Semifinal 1', 'p2': 'Winner of Semifinal 2', 'score1': None, 'score2': None}
+
+    if playins:
+        bracket['playins'] = playins
+    if qfs:
+        bracket['qfs'] = qfs
+    if sfs:
+        bracket['sfs'] = sfs
+    bracket['final'] = final
+    return bracket
 
 
 def _update_knockout_progress(bracket):
@@ -257,15 +338,59 @@ def _update_knockout_progress(bracket):
     if bracket is None:
         return
 
+    size = bracket.get('size', 0)
+
+    playin_winners = []
+    for m in bracket.get('playins', []):
+        s1, s2 = m.get('score1'), m.get('score2')
+        if s1 is not None and s2 is not None:
+            playin_winners.append(m['p1'] if s1 >= s2 else m['p2'])
+        else:
+            playin_winners.append(None)
+
+    if size == 6 and playin_winners:
+        if playin_winners[0]:
+            bracket['sfs'][0]['p2'] = playin_winners[0]
+
+    if size == 11 and len(playin_winners) == 2:
+        if playin_winners[1]:
+            bracket['qfs'][0]['p2'] = playin_winners[1]
+        if playin_winners[0]:
+            bracket['qfs'][1]['p2'] = playin_winners[0]
+
+    if size >= 12 and len(playin_winners) == 4:
+        if playin_winners[2]:
+            bracket['qfs'][0]['p2'] = playin_winners[2]
+        if playin_winners[1]:
+            bracket['qfs'][1]['p2'] = playin_winners[1]
+        if playin_winners[0]:
+            bracket['qfs'][2]['p2'] = playin_winners[0]
+        if playin_winners[3]:
+            bracket['qfs'][3]['p2'] = playin_winners[3]
+
     winners_qf = []
     for m in bracket.get('qfs', []):
         s1, s2 = m.get('score1'), m.get('score2')
         if s1 is not None and s2 is not None:
             winners_qf.append(m['p1'] if s1 >= s2 else m['p2'])
-    if len(winners_qf) == 3 and 'sfs' in bracket:
-        bracket['sfs'][0]['p2'] = winners_qf[2]
-        bracket['sfs'][1]['p1'] = winners_qf[0]
-        bracket['sfs'][1]['p2'] = winners_qf[1]
+        else:
+            winners_qf.append(None)
+
+    if size in (7, 8) and len(winners_qf) == 3 and all(winners_qf):
+        seed_map = {p: i for i, p in enumerate(bracket['seeds'][:7])}
+        winners_sorted = sorted(winners_qf, key=lambda p: seed_map.get(p, 100))
+        lowest = winners_sorted[-1]
+        others = [w for w in winners_sorted if w != lowest]
+        bracket['sfs'][0]['p2'] = lowest
+        bracket['sfs'][1]['p1'] = others[0]
+        bracket['sfs'][1]['p2'] = others[1]
+    elif size >= 8 and len(winners_qf) >= 4:
+        if winners_qf[0] and winners_qf[-1]:
+            bracket['sfs'][0]['p1'] = winners_qf[0]
+            bracket['sfs'][0]['p2'] = winners_qf[-1]
+        if winners_qf[1] and winners_qf[2]:
+            bracket['sfs'][1]['p1'] = winners_qf[1]
+            bracket['sfs'][1]['p2'] = winners_qf[2]
 
     winners_sf = []
     for m in bracket.get('sfs', []):
@@ -273,6 +398,7 @@ def _update_knockout_progress(bracket):
         p1, p2 = m.get('p1'), m.get('p2')
         if p1 and p2 and s1 is not None and s2 is not None:
             winners_sf.append(p1 if s1 >= s2 else p2)
+
     if len(winners_sf) == 2 and 'final' in bracket:
         bracket['final']['p1'] = winners_sf[0]
         bracket['final']['p2'] = winners_sf[1]
@@ -350,7 +476,7 @@ def record_knockout_score(t_id: int, stage: str, index: int):
 
     if stage == 'final':
         match = bracket['final']
-    elif stage in ('qfs', 'sfs'):
+    elif stage in ('playins', 'qfs', 'sfs'):
         matches = bracket.get(stage)
         if matches is None or not (0 <= index < len(matches)):
             conn.close()

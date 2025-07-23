@@ -14,6 +14,33 @@
     <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button back-link">Back to Group Stage</a>
     <div class="knockout-container">
         {% if bracket %}
+        {% if bracket.playins %}
+        <section class="knockout-card">
+            <h2>Play-ins</h2>
+            <table>
+                <tr><th>Match</th><th>Score</th></tr>
+                {% for m in bracket.playins %}
+                <tr>
+                    <td>{{ m.p1 }} vs {{ m.p2 }}</td>
+                    <td>
+                        {% if session.admin_logged_in %}
+                        <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='playins', index=loop.index0) }}" method="post">
+                            <input type="number" name="score1" min="0" required class="score-input" value="{{ m.score1 if m.score1 is not none }}">
+                            -
+                            <input type="number" name="score2" min="0" required class="score-input" value="{{ m.score2 if m.score2 is not none }}">
+                            <button type="submit" class="styled-button primary-button">Save</button>
+                        </form>
+                        {% else %}
+                            {{ m.score1 if m.score1 is not none else '' }} - {{ m.score2 if m.score2 is not none else '' }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+        {% endif %}
+
+        {% if bracket.qfs %}
         <section class="knockout-card">
             <h2>Quarterfinals</h2>
             <table>
@@ -37,6 +64,7 @@
                 {% endfor %}
             </table>
         </section>
+        {% endif %}
         <section class="knockout-card">
             <h2>Semifinals</h2>
             <table>
