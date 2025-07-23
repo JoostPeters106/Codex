@@ -83,6 +83,14 @@
                 </li>
                 {% endfor %}
             </ul>
+            <div class="pagination">
+                {% if has_prev %}
+                <a href="{{ url_for('index', page=page-1) }}" class="styled-button secondary-button">Previous</a>
+                {% endif %}
+                {% if has_next %}
+                <a href="{{ url_for('index', page=page+1) }}" class="styled-button secondary-button">Next</a>
+                {% endif %}
+            </div>
             {% else %}
             <p>No tournaments saved.</p>
             {% endif %}
