@@ -60,12 +60,16 @@
                 <tr>
                     <td>{{ m.p1 }} vs {{ m.p2 }}</td>
                     <td>
+                        {% if session.admin_logged_in %}
                         <form action="{{ url_for('record_score', t_id=t_id, group='A', index=ns.idx) }}" method="post" style="display:inline">
                             <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
                             -
                             <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
                             <button type="submit" class="styled-button primary-button">Save</button>
                         </form>
+                        {% else %}
+                            {{ m.score1 if m.score1 is not none else '' }} - {{ m.score2 if m.score2 is not none else '' }}
+                        {% endif %}
                     </td>
                 </tr>
                 {% set ns.idx = ns.idx + 1 %}
