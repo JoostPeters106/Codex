@@ -28,7 +28,7 @@
 
 <body style="height: 100%; flex: 1">
     <div class="index-layout">
-        <section id="new-tournament" class="card" style="width: 35%;">
+        <section id="new-tournament" class="card" style="width: 80%;">
             <h2>New Tournament</h2>
             {% if session.admin_logged_in %}
             <form action="{{ url_for('add_player') }}" method="post" class="add-player-form">
@@ -60,12 +60,12 @@
             {% endif %}
         </section>
 
-        <section id="past-tournaments" class="card" style="width: 55%;">
+        <section id="past-tournaments" class="card" style="width: 85%;">
             <h2 style:"text-align: left;">Past Tournaments</h2>
             {% if tournaments %}
             <ul class="tournament-list">
                 {% for t in tournaments %}
-                <li style="border-bottom: 1px solid #ccc; padding: 5px 0;">
+                <li style="border-bottom: 1px solid #ccc;">
                     <strong>{{ t.name }}</strong> - {{ t.created_at }}<br>
                     <span class="caption">Players in tournament: {{ t.players|length }}</span>
                     <div class="actions">
@@ -101,14 +101,6 @@
 <footer class="site-footer">
   <div class="footer-left">
     <p>© {{ current_year }} Darts Tournament Manager</p>
-  </div>
-  <nav class="footer-nav">
-    <a href="">Home</a>
-    <a href="">About</a>
-    <a href="">Contact</a>
-    <a href="">Privacy</a>
-  </nav>
-  <div class="footer-right">
   </div>
 </footer>
 

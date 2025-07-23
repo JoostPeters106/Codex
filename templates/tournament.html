@@ -14,15 +14,15 @@
         <h1>Tournament {{ t_id }}</h1>
         <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     </header>
-    <form id="reset-form" action="{{ url_for('reset') }}" method="post" style="padding-bottom: 1em;">
-        <button id="reset-btn" type="button" class="styled-button secondary-button">Go back to start</button>
+    <form id="reset-form" action="{{ url_for('reset') }}" method="post">
+        <button id="reset-btn" type="button" class="styled-button secondary-button" style="margin-left: 24px">Go back to start</button>
     </form>
 
     <div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
         <div style="background:#fff; padding:1em; border-radius:5px; width:200px; margin:20% auto; text-align:center; color:#000;">
             <p>Are you sure?</p>
-            <button id="confirm-yes" class="styled-button danger-button">Yes</button>
-            <button id="confirm-no" class="styled-button secondary-button">No</button>
+            <button id="confirm-yes" class="styled-button danger-button" style="margin: 2px">Yes</button>
+            <button id="confirm-no" class="styled-button secondary-button" style="margin: 2px">No</button>
         </div>
     </div>
 
@@ -39,11 +39,11 @@
             </section>
 
             <section class="standings card">
-                <h2>Standings</h2>
+                <h2 style="line-height: 0.6">Standings</h2>
                 <table>
                     <tr><th>Player</th><th>Points</th><th>GD</th></tr>
                     {% for s in standings_a %}
-                    <tr><td>{{ s.name }}</td><td>{{ s.points }}</td><td>{{ s.gd }}</td></tr>
+                    <tr><td style="padding: 1em;">{{ s.name }}</td><td style="padding: 1em;">{{ s.points }}</td><td style="padding: 1em;">{{ s.gd }}</td></tr>
                     {% endfor %}
                 </table>
             </section>
