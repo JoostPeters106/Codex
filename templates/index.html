@@ -12,20 +12,19 @@
 <body>
     <header class="site-header">
         <h1>SON Darts Championship</h1>
+        {% if not session.admin_logged_in %}
+        <form action="{{ url_for('login') }}" method="post" class="login-form">
+            <input type="text" name="username" placeholder="Username" class="styled-input" required>
+            <input type="password" name="password" placeholder="Password" class="styled-input" required>
+            <button type="submit" class="styled-button secondary-button">Login</button>
+        </form>
+        {% else %}
+        <form action="{{ url_for('logout') }}" method="post" class="login-form">
+            <button type="submit" class="styled-button secondary-button">Logout</button>
+        </form>
+        {% endif %}
         <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     </header>
-
-    {% if not session.admin_logged_in %}
-    <form action="{{ url_for('login') }}" method="post" class="card" style="margin-bottom:1em;">
-        <input type="text" name="username" placeholder="Username" class="styled-input" required>
-        <input type="password" name="password" placeholder="Password" class="styled-input" required style="margin-top:0.5em;">
-        <button type="submit" class="styled-button secondary-button" style="margin-top:0.5em;">Login</button>
-    </form>
-    {% else %}
-    <form action="{{ url_for('logout') }}" method="post" class="card" style="margin-bottom:1em;">
-        <button type="submit" class="styled-button secondary-button">Logout</button>
-    </form>
-    {% endif %}
 
     <div class="index-layout">
         <section id="new-tournament" class="card">

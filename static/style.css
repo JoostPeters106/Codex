@@ -52,6 +52,11 @@ body {
   margin: -0.5em -1em;
 }
 
+.login-form {
+  display: flex;
+  gap: 0.5em;
+}
+
 h1, h2, h3 {
   font-family: 'Roboto Condensed', 'Helvetica Neue', Arial, sans-serif;
   margin-top: 0;
@@ -174,6 +179,8 @@ a:hover {
   border: 1px solid var(--son-grey);
   border-radius: var(--son-radius);
   transition: box-shadow 150ms ease-out;
+  background: var(--son-white);
+  color: var(--son-black);
 }
 
 .styled-input:focus {

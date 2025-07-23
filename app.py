@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from tournament import draw_group, schedule_round_robin
 import json
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "password"
@@ -35,6 +35,7 @@ init_db()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'replace-this-secret'
+app.permanent_session_lifetime = timedelta(days=365)
 
 
 @app.route('/login', methods=['POST'])
@@ -42,6 +43,7 @@ def login():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
     if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        session.permanent = True
         session['admin_logged_in'] = True
     return redirect(url_for('index'))
 
