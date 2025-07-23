@@ -739,3 +739,10 @@ tr:last-child td {
 .knockout-container .card {
   margin: 0 auto;
 }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

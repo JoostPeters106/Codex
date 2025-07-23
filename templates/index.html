@@ -13,6 +13,9 @@
 <header class="site-header">
     <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     <h1>Darts Tournament Manager</h1>
+    {% if current_tournament_name %}
+    <h2>{{ current_tournament_name }}</h2>
+    {% endif %}
     {% if not session.admin_logged_in %}
     <form action="{{ url_for('login') }}" method="post" class="login-form">
         <input type="text" name="username" placeholder="Username" class="styled-input" required>
@@ -31,6 +34,10 @@
         <section id="new-tournament" class="card" style="width: 80%;">
             <h2>New Tournament</h2>
             {% if session.admin_logged_in %}
+            <form action="{{ url_for('set_title') }}" method="post" class="add-player-form">
+                <input type="text" class="styled-input" name="tournament_title" placeholder="Tournament title" value="{{ session.tournament_title }}" style="width: 80%">
+                <button type="submit" class="styled-button primary-button" style="margin-top: 0.25em;">Set Title</button>
+            </form>
             <form action="{{ url_for('add_player') }}" method="post" class="add-player-form">
                 <input type="text" class="styled-input" name="player_name" placeholder="Player name" style="width: 80%">
                 <button type="submit" class="styled-button primary-button" style="margin-top: 0.25em;">Add</button>
