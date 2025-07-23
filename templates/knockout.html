@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knockout Stage</title>
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
-    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -14,7 +11,7 @@
         <h1>{{ current_tournament_name }}</h1>
         <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     </header>
-    <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button" style="margin-bottom:1em;display:inline-block; width: 200px;" >Back to Group Stage</a>
+    <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button back-link">Back to Group Stage</a>
     <div class="knockout-container">
         {% if bracket %}
         <section class="knockout-card">
@@ -27,9 +24,9 @@
                     <td>
                         {% if session.admin_logged_in %}
                         <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='qfs', index=loop.index0) }}" method="post">
-                            <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
+                            <input type="number" name="score1" min="0" required class="score-input" value="{{ m.score1 if m.score1 is not none }}">
                             -
-                            <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
+                            <input type="number" name="score2" min="0" required class="score-input" value="{{ m.score2 if m.score2 is not none }}">
                             <button type="submit" class="styled-button primary-button">Save</button>
                         </form>
                         {% else %}
@@ -50,9 +47,9 @@
                     <td>
                         {% if session.admin_logged_in and m.p1 and m.p2 and 'Winner of' not in m.p1 and 'Winner of' not in m.p2 %}
                         <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='sfs', index=loop.index0) }}" method="post">
-                            <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
+                            <input type="number" name="score1" min="0" required class="score-input" value="{{ m.score1 if m.score1 is not none }}">
                             -
-                            <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
+                            <input type="number" name="score2" min="0" required class="score-input" value="{{ m.score2 if m.score2 is not none }}">
                             <button type="submit" class="styled-button primary-button">Save</button>
                         </form>
                         {% else %}
@@ -72,9 +69,9 @@
                     <td>
                         {% if session.admin_logged_in and bracket.final.p1 and bracket.final.p2 and 'Winner of' not in bracket.final.p1 and 'Winner of' not in bracket.final.p2 %}
                         <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='final', index=0) }}" method="post">
-                            <input type="number" name="score1" min="0" required style="width:3em;" value="{{ bracket.final.score1 if bracket.final.score1 is not none }}">
+                            <input type="number" name="score1" min="0" required class="score-input" value="{{ bracket.final.score1 if bracket.final.score1 is not none }}">
                             -
-                            <input type="number" name="score2" min="0" required style="width:3em;" value="{{ bracket.final.score2 if bracket.final.score2 is not none }}">
+                            <input type="number" name="score2" min="0" required class="score-input" value="{{ bracket.final.score2 if bracket.final.score2 is not none }}">
                             <button type="submit" class="styled-button primary-button">Save</button>
                         </form>
                         {% else %}
@@ -84,7 +81,7 @@
                 </tr>
             </table>
             {% if bracket.final.score1 is not none and bracket.final.score2 is not none %}
-            <p style="margin-top:0.5em;"><strong>Champion: {{ bracket.final.p1 if bracket.final.score1 >= bracket.final.score2 else bracket.final.p2 }}</strong></p>
+            <p class="champion-line"><strong>Champion: {{ bracket.final.p1 if bracket.final.score1 >= bracket.final.score2 else bracket.final.p2 }}</strong></p>
             {% endif %}
         </section>
         {% else %}

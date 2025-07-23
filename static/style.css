@@ -322,6 +322,10 @@ h3 {
   color: var(--text-tertiary);
 }
 
+.score-input {
+  width: 3em;
+}
+
 /* Enhanced Tables */
 table {
   width: 100%;
@@ -456,6 +460,7 @@ tr:last-child td {
 
 .add-player-form .styled-button {
   flex-shrink: 0;
+  margin-top: 0.25em;
 }
 
 /* Player Container */
@@ -505,6 +510,25 @@ tr:last-child td {
 /* Add spacing for better content flow */
 .card h2 {
   margin-bottom: 2rem;
+}
+
+.standings-title {
+  line-height: 0.6;
+}
+
+.go-link {
+  margin-top: 1em;
+  display: inline-block;
+}
+
+.back-link {
+  margin-bottom: 1em;
+  display: inline-block;
+  width: 200px;
+}
+
+.champion-line {
+  margin-top: 0.5em;
 }
 
 .card p {
@@ -645,10 +669,6 @@ tr:last-child td {
     justify-content: center;
   }
   
-  .footer-nav {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
 }
 
 @media (max-width: 480px) {
@@ -749,6 +769,10 @@ tr:last-child td {
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+.loading-container img {
+  max-width: 10%;
 }
 
 /*knockout card design*/
