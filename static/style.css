@@ -202,7 +202,6 @@ h3 {
   border-radius: var(--radius-lg);
   padding: 3rem;
   box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(250, 202, 7, 0.1);
   position: relative;
   overflow: hidden;
   transition: all var(--transition-medium);
@@ -414,6 +413,9 @@ tr:last-child td {
   padding: 2rem;
   box-shadow: var(--shadow-sm);
   border-left: 6px solid var(--championship-yellow);
+  border-top: 1px solid var(--surface-tertiary); /* Top border */
+  border-bottom: 1px solid var(--surface-tertiary); /* Bottom border */
+  border-right: 1px solid var(--surface-tertiary); /* Right border */
   transition: all var(--transition-fast);
   min-height: 120px;
   display: flex;
