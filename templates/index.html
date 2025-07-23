@@ -20,7 +20,7 @@
             <h2>New Tournament</h2>
             <form action="{{ url_for('add_player') }}" method="post" class="add-player-form">
                 <input type="text" class="styled-input" name="player_name" placeholder="Player name">
-                <button type="submit" class="styled-button">Add</button>
+                <button type="submit" class="styled-button primary-button">Add</button>
             </form>
 
             <div class="player-container">
@@ -30,13 +30,13 @@
                     <li>
                         {{ p }}
                         <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post" style="display:inline">
-                            <button type="submit" class="styled-button">Remove</button>
+                            <button type="submit" class="styled-button danger-button">Remove</button>
                         </form>
                     </li>
                     {% endfor %}
                 </ul>
                 <form action="{{ url_for('start_tournament') }}" method="post">
-                    <button type="submit" class="styled-button">Start Tournament</button>
+                    <button type="submit" class="styled-button primary-button">Start Tournament</button>
                 </form>
                 {% else %}
                 <p>No players added yet.</p>
@@ -53,9 +53,9 @@
                     <strong>{{ t.name }}</strong> - {{ t.created_at }}<br>
                     <span class="caption">Players in tournament: {{ t.players|length }}</span>
                     <div class="actions">
-                        <a href="{{ url_for('tournament_view', t_id=t.id) }}" class="styled-button">Open</a>
+                        <a href="{{ url_for('tournament_view', t_id=t.id) }}" class="styled-button secondary-button">Open</a>
                         <form action="{{ url_for('delete_tournament', t_id=t.id) }}" method="post" style="display:inline">
-                            <button type="submit" class="styled-button">Delete</button>
+                            <button type="submit" class="styled-button danger-button">Delete</button>
                         </form>
                     </div>
                 </li>
