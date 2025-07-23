@@ -1,6 +1,6 @@
 # Codex Darts Tournament Manager
 
-This repository contains a simple web-based application for managing 8-player darts tournaments. All players start in a single group (Group A) before entering a single-elimination knockout bracket of seven players.
+This repository contains a simple web-based application for managing darts tournaments. Any number of players from four up to twelve can be entered. All players start in a single group (Group A) before entering a knockout bracket seeded by the group results.
 
 ## Web Usage
 
