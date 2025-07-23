@@ -16,6 +16,7 @@
 
 :root {
   --son-navy: #001126;
+  --son-light-navy: #031e43;
   --son-yellow: #FFC72C;
   --son-blue: #2978B5;
   --son-red: #C8102E;
@@ -30,8 +31,7 @@
 body {
   font-family: 'Roboto Condensed', 'Helvetica Neue', Arial, sans-serif;
   margin: 0;
-  padding: 1em;
-  background: var(--son-navy);
+  background: var(--son-light-navy);
   color: var(--son-white);
 }
 
@@ -56,6 +56,51 @@ body {
   display: flex;
   gap: 0.5em;
 }
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--son-navy);
+  color: var(--son-white);
+  padding: 1em;
+  font-size: 0.9rem;
+  border-top: 3px solid var(--son-gold);
+}
+
+.footer-left p {
+  margin: 0;
+}
+
+.footer-nav {
+  display: flex;
+  gap: 1em;
+}
+.footer-nav a {
+  color: var(--son-gold);
+  text-decoration: none;
+}
+.footer-nav a:hover {
+  text-decoration: underline;
+}
+
+.footer-right .styled-button {
+  padding: 0.4em 0.8em;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .site-footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5em;
+  }
+  .footer-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 
 h1, h2, h3 {
   font-family: 'Roboto Condensed', 'Helvetica Neue', Arial, sans-serif;
@@ -82,6 +127,7 @@ h3 {
 .index-layout, .tournament-layout {
   display: flex;
   gap: 4%;
+  padding: 1em;
 }
 
 .tournament-sidebar {

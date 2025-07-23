@@ -9,29 +9,30 @@
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <header class="site-header">
-        <h1>SON Darts Championship</h1>
-        {% if not session.admin_logged_in %}
-        <form action="{{ url_for('login') }}" method="post" class="login-form">
-            <input type="text" name="username" placeholder="Username" class="styled-input" required>
-            <input type="password" name="password" placeholder="Password" class="styled-input" required>
-            <button type="submit" class="styled-button secondary-button">Login</button>
-        </form>
-        {% else %}
-        <form action="{{ url_for('logout') }}" method="post" class="login-form">
-            <button type="submit" class="styled-button secondary-button">Logout</button>
-        </form>
-        {% endif %}
-        <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
-    </header>
 
+<header class="site-header">
+    <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
+    <h1>Darts Tournament Manager</h1>
+    {% if not session.admin_logged_in %}
+    <form action="{{ url_for('login') }}" method="post" class="login-form">
+        <input type="text" name="username" placeholder="Username" class="styled-input" required>
+        <input type="password" name="password" placeholder="Password" class="styled-input" required>
+        <button type="submit" class="styled-button secondary-button">Login</button>
+    </form>
+    {% else %}
+    <form action="{{ url_for('logout') }}" method="post" class="login-form">
+        <button type="submit" class="styled-button secondary-button">Logout</button>
+    </form>
+    {% endif %}
+</header>
+
+<body style="height: 100%; flex: 1">
     <div class="index-layout">
-        <section id="new-tournament" class="card">
+        <section id="new-tournament" class="card" style="width: 35%;">
             <h2>New Tournament</h2>
             {% if session.admin_logged_in %}
             <form action="{{ url_for('add_player') }}" method="post" class="add-player-form">
-                <input type="text" class="styled-input" name="player_name" placeholder="Player name">
+                <input type="text" class="styled-input" name="player_name" placeholder="Player name" style="width: 80%">
                 <button type="submit" class="styled-button primary-button" style="margin-top: 0.25em;">Add</button>
             </form>
 
@@ -59,12 +60,12 @@
             {% endif %}
         </section>
 
-        <section id="past-tournaments" class="card">
-            <h2>Past Tournaments</h2>
+        <section id="past-tournaments" class="card" style="width: 55%;">
+            <h2 style:"text-align: left;">Past Tournaments</h2>
             {% if tournaments %}
             <ul class="tournament-list">
                 {% for t in tournaments %}
-                <li>
+                <li style="border-bottom: 1px solid #ccc; padding: 5px 0;">
                     <strong>{{ t.name }}</strong> - {{ t.created_at }}<br>
                     <span class="caption">Players in tournament: {{ t.players|length }}</span>
                     <div class="actions">
@@ -95,6 +96,20 @@
         <h2>Knockout Stage</h2>
         <div id="knockout-bracket"></div>
     </section>
-
 </body>
+
+<footer class="site-footer">
+  <div class="footer-left">
+    <p>© {{ current_year }} Darts Tournament Manager</p>
+  </div>
+  <nav class="footer-nav">
+    <a href="">Home</a>
+    <a href="">About</a>
+    <a href="">Contact</a>
+    <a href="">Privacy</a>
+  </nav>
+  <div class="footer-right">
+  </div>
+</footer>
+
 </html>
