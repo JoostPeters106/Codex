@@ -600,6 +600,11 @@ tr:last-child td {
   .card {
     min-height: 400px;
   }
+
+  .knockout-card {
+      width: 95%;
+  }
+
 }
 
 @media (max-width: 768px) {
@@ -726,7 +731,7 @@ tr:last-child td {
   }
 }
 
-/* Centering */
+/* Knockout Centering */
 .knockout-container {
   display: flex;
   flex-direction: column;
@@ -744,4 +749,35 @@ tr:last-child td {
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+/*knockout card design*/
+.knockout-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(250, 202, 7, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-medium);
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.knockout-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--championship-yellow) 0%, var(--flight-blue) 100%);
+}
+
+.knockout-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
 }

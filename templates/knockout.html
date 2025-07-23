@@ -17,7 +17,7 @@
     <a href="{{ url_for('tournament_view', t_id=t_id) }}" class="styled-button secondary-button" style="margin-bottom:1em;display:inline-block; width: 200px;" >Back to Group Stage</a>
     <div class="knockout-container">
         {% if bracket %}
-        <section class="card" style="width: 50%;">
+        <section class="knockout-card">
             <h2>Quarterfinals</h2>
             <table>
                 <tr><th>Match</th><th>Score</th></tr>
@@ -40,7 +40,7 @@
                 {% endfor %}
             </table>
         </section>
-        <section class="card" style="width: 50%;">
+        <section class="knockout-card">
             <h2>Semifinals</h2>
             <table>
                 <tr><th>Match</th><th>Score</th></tr>
@@ -63,7 +63,7 @@
                 {% endfor %}
             </table>
         </section>
-        <section class="card" style="width: 50%;">
+        <section class="knockout-card">
             <h2>Final</h2>
             <table>
                 <tr><th>Match</th><th>Score</th></tr>
@@ -88,7 +88,7 @@
             {% endif %}
         </section>
         {% else %}
-        <section class="card">
+        <section class="knockout-card">
             <p>Knockout bracket is not available yet.</p>
         </section>
         {% endif %}
