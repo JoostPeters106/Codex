@@ -273,6 +273,15 @@ def _update_knockout_progress(bracket):
         bracket['final']['p2'] = winners_sf[1]
 
 
+def _players_known(match):
+    """Return True if both players have been decided."""
+    p1 = match.get('p1')
+    p2 = match.get('p2')
+    if not p1 or not p2:
+        return False
+    return not str(p1).startswith('Winner') and not str(p2).startswith('Winner')
+
+
 @app.route('/tournament/<int:t_id>/record/<group>/<int:index>', methods=['POST'])
 def record_score(t_id: int, group: str, index: int):
     if not session.get('admin_logged_in'):
@@ -343,6 +352,10 @@ def record_knockout_score(t_id: int, stage: str, index: int):
             return redirect(url_for('knockout_view', t_id=t_id))
         match = matches[index]
     else:
+        conn.close()
+        return redirect(url_for('knockout_view', t_id=t_id))
+
+    if stage in ('sfs', 'final') and not _players_known(match):
         conn.close()
         return redirect(url_for('knockout_view', t_id=t_id))
 
