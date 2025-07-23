@@ -20,16 +20,16 @@
             <h2>New Tournament</h2>
             <form action="{{ url_for('add_player') }}" method="post" class="add-player-form">
                 <input type="text" class="styled-input" name="player_name" placeholder="Player name">
-                <button type="submit" class="styled-button primary-button">Add</button>
+                <button type="submit" class="styled-button primary-button" style="margin-top: 0.25em;">Add</button>
             </form>
 
             <div class="player-container">
                 {% if players %}
-                <ul id="player-list">
+                <ul id="player-list" style="border: 1px solid #000; padding: 10px; list-style-type: none; border-radius: 8px;">
                     {% for p in players %}
-                    <li>
+                    <li style="border-bottom: 1px solid #ccc; padding: 5px 0;">
                         {{ p }}
-                        <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post" style="display:inline">
+                        <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post" style="display:inline; float: right;">
                             <button type="submit" class="styled-button danger-button">Remove</button>
                         </form>
                     </li>

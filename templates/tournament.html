@@ -14,7 +14,7 @@
         <h1>Tournament {{ t_id }}</h1>
         <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     </header>
-    <form id="reset-form" action="{{ url_for('reset') }}" method="post">
+    <form id="reset-form" action="{{ url_for('reset') }}" method="post" style="padding-bottom: 1em;">
         <button id="reset-btn" type="button" class="styled-button secondary-button">Go back to start</button>
     </form>
 
@@ -49,9 +49,8 @@
         </div>
 
         <div class="matches card">
-            <h2>Group A</h2>
-            <p>{{ ', '.join(group_a) }}</p>
-            <h3>Matches</h3>
+            <h2>Group Stage</h2>
+            <h3 style="text-align: left;">Matches</h3>
             <table>
                 <tr><th>Match</th><th>Score</th></tr>
                 {% for m in schedule_a %}
