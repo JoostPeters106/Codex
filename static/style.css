@@ -468,7 +468,6 @@ tr:last-child td {
 
 /* Specific card content adjustments */
 .players.card ul {
-  flex: 1;
   margin: 0;
   padding: 0;
   list-style: none;
