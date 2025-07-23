@@ -15,14 +15,14 @@
         <img src="{{ url_for('static', filename='Dutch_darts_v2.png') }}" alt="Logo">
     </header>
     <form id="reset-form" action="{{ url_for('reset') }}" method="post">
-        <button id="reset-btn" type="button" class="styled-button">Go back to start</button>
+        <button id="reset-btn" type="button" class="styled-button secondary-button">Go back to start</button>
     </form>
 
     <div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-        <div style="background:#fff; padding:1em; border-radius:5px; width:200px; margin:20% auto; text-align:center;">
+        <div style="background:#fff; padding:1em; border-radius:5px; width:200px; margin:20% auto; text-align:center; color:#000;">
             <p>Are you sure?</p>
-            <button id="confirm-yes" class="styled-button">Yes</button>
-            <button id="confirm-no" class="styled-button">No</button>
+            <button id="confirm-yes" class="styled-button danger-button">Yes</button>
+            <button id="confirm-no" class="styled-button secondary-button">No</button>
         </div>
     </div>
 
@@ -62,7 +62,7 @@
                             <input type="number" name="score1" min="0" required style="width:3em;" value="{{ m.score1 if m.score1 is not none }}">
                             -
                             <input type="number" name="score2" min="0" required style="width:3em;" value="{{ m.score2 if m.score2 is not none }}">
-                            <button type="submit" class="styled-button">Save</button>
+                            <button type="submit" class="styled-button primary-button">Save</button>
                         </form>
                     </td>
                 </tr>
