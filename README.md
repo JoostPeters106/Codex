@@ -4,7 +4,7 @@ This repository contains a simple web-based application for managing darts tourn
 
 ## Web Usage
 
-Run the Node.js server and open the page in your browser:
+Run the Node.js server (requires Node.js 18 or later) and open the page in your browser:
 
 ```bash
 npm install
@@ -23,3 +23,4 @@ password: password
 Only an authenticated admin can create or modify tournaments.
 
 The old Python CLI has been removed in favour of the JavaScript implementation.
+All dynamic pages are rendered using the Nunjucks templating engine from within an Express server.
