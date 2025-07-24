@@ -95,22 +95,21 @@ body {
   font-size: var(--text-base);
 }
 
-/* Modern Header - Fully Responsive */
+
+/* Modern Header */
 .site-header {
   background: var(--surface-overlay);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(250, 202, 7, 0.2);
-  padding: clamp(0.75rem, 2vw, 1rem) var(--spacing-md);
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   top: 0;
-  z-index: 1000;
-  min-height: 90px;
+  z-index: 100;
+  height: 95px;
   box-shadow: var(--shadow-md);
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
 }
 
 .site-header::before {
@@ -124,11 +123,10 @@ body {
 }
 
 .site-header img {
-  height: clamp(35px, 6vw, 45px);
+  height: 60px;
   width: auto;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   transition: transform var(--transition-fast);
-  order: 1;
 }
 
 .site-header img:hover {
@@ -138,36 +136,17 @@ body {
 .site-header h1 {
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  font-size: clamp(1rem, 3vw, 1.5rem);
   margin: 0;
   color: var(--text-inverse);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   letter-spacing: -0.02em;
-  text-align: center;
-  flex: 1;
-  min-width: 0;
-  order: 2;
 }
 
-.site-header h2 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 600;
-  font-size: clamp(0.875rem, 2.5vw, 1.25rem);
-  margin: 0;
-  color: var(--championship-yellow);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  letter-spacing: -0.02em;
-  order: 3;
-}
-
-/* Login Form Styling - Mobile Friendly */
+/* Login Form Styling */
 .login-form {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.75rem;
   align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  order: 4;
 }
 
 /* Typography - Responsive */
@@ -205,6 +184,7 @@ h2::after {
 h3 {
   font-size: clamp(var(--text-lg), 3vw, var(--text-xl));
   color: var(--text-secondary);
+  margin: 0px;
 }
 
 /* Modern Layout - Fully Responsive */
@@ -597,7 +577,7 @@ tr:last-child td {
 
 /* Reset form button styling */
 #reset-form {
-  margin: var(--spacing-md) var(--spacing-lg);
+  margin: 1em;
   display: inline-block;
 }
 
@@ -632,7 +612,6 @@ tr:last-child td {
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-lg);
-  padding: var(--spacing-lg);
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -744,7 +723,7 @@ tr:last-child td {
   }
   
   .site-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
   
   .index-layout {
@@ -787,13 +766,14 @@ tr:last-child td {
 }
 
 /* Tablet Portrait & Mobile Landscape */
-@media (max-width: 767px) {
+@media (max-width: 800px) {
   .site-header {
     padding: var(--spacing-sm);
     min-height: 60px;
     flex-direction: row;
     text-align: left;
     flex-wrap: wrap;
+    padding-bottom: 8em
   }
   
   .site-header img {
@@ -803,14 +783,12 @@ tr:last-child td {
   
   .site-header h1 {
     order: 2;
-    font-size: 1.125rem;
     text-align: left;
     flex: 1;
   }
   
   .site-header h2 {
     order: 3;
-    font-size: 0.875rem;
     width: 100%;
     text-align: center;
     margin-top: var(--spacing-xs);
@@ -861,7 +839,6 @@ tr:last-child td {
   }
   
   .styled-button {
-    flex: 1;
     min-width: 120px;
   }
   
@@ -869,10 +846,7 @@ tr:last-child td {
   table {
     font-size: var(--text-sm);
   }
-  
-  th, td {
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
+
 }
 
 /* Mobile Portrait */
@@ -887,10 +861,11 @@ tr:last-child td {
   
   .site-header {
     padding: var(--spacing-sm);
+    padding-bottom: 8em
   }
   
   .site-header h1 {
-    font-size: var(--text-lg);
+    font-size: 1.5rem;
   }
   
   .card {
@@ -904,7 +879,6 @@ tr:last-child td {
   }
   
   .styled-button {
-    padding: var(--spacing-xs) var(--spacing-sm);
     font-size: var(--text-sm);
     min-width: 100px;
   }
@@ -915,7 +889,7 @@ tr:last-child td {
   }
   
   .actions .styled-button {
-    width: 100%;
+    width: 95%;
   }
   
   /* Horizontal scroll for tables on very small screens */
@@ -925,13 +899,11 @@ tr:last-child td {
   }
   
   table {
-    min-width: 300px;
     font-size: var(--text-xs);
   }
   
   th, td {
     padding: var(--spacing-xs);
-    white-space: nowrap;
   }
 }
 
