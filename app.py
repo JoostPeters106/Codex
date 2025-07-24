@@ -3,6 +3,7 @@ from tournament import draw_group, schedule_round_robin
 import json
 import sqlite3
 from datetime import datetime, timedelta
+import flask_login
 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "password"
@@ -37,6 +38,22 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'replace-this-secret'
 app.permanent_session_lifetime = timedelta(days=365)
 
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+
+class User(flask_login.UserMixin):
+    pass
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id == ADMIN_USERNAME:
+        user = User()
+        user.id = ADMIN_USERNAME
+        return user
+    return None
+
 
 @app.context_processor
 def inject_tournament_name():
@@ -65,14 +82,19 @@ def login():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
     if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-        session.permanent = True
-        session['admin_logged_in'] = True
+        user = User()
+        user.id = ADMIN_USERNAME
+        flask_login.login_user(
+            user,
+            remember=True,
+            duration=app.permanent_session_lifetime,
+        )
     return redirect(url_for('index'))
 
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    session.pop('admin_logged_in', None)
+    flask_login.logout_user()
     return redirect(url_for('index'))
 
 @app.route('/')
@@ -112,7 +134,7 @@ def index():
 
 @app.route('/add', methods=['POST'])
 def add_player():
-    if not session.get('admin_logged_in'):
+    if not flask_login.current_user.is_authenticated:
         return redirect(url_for('index'))
     name = request.form.get('player_name', '').strip()
     if name:
@@ -124,7 +146,7 @@ def add_player():
 
 @app.route('/remove/<int:index>', methods=['POST'])
 def remove_player(index: int):
-    if not session.get('admin_logged_in'):
+    if not flask_login.current_user.is_authenticated:
         return redirect(url_for('index'))
     players = session.get('players', [])
     if 0 <= index < len(players):
@@ -135,7 +157,7 @@ def remove_player(index: int):
 
 @app.route('/set_title', methods=['POST'])
 def set_title():
-    if not session.get('admin_logged_in'):
+    if not flask_login.current_user.is_authenticated:
         return redirect(url_for('index'))
     title = request.form.get('tournament_title', '').strip()
     if title:
@@ -147,7 +169,7 @@ def set_title():
 
 @app.route('/start', methods=['POST'])
 def start_tournament():
-    if not session.get('admin_logged_in'):
+    if not flask_login.current_user.is_authenticated:
         return redirect(url_for('index'))
     players_json = request.form.get('players_json', '[]')
     try:
@@ -429,7 +451,7 @@ def _players_known(match):
 
 @app.route('/tournament/<int:t_id>/record/<group>/<int:index>', methods=['POST'])
 def record_score(t_id: int, group: str, index: int):
-    if not session.get('admin_logged_in'):
+    if not flask_login.current_user.is_authenticated:
         return redirect(url_for('tournament_view', t_id=t_id))
     if group != 'A':
         return redirect(url_for('tournament_view', t_id=t_id))
@@ -471,7 +493,7 @@ def record_score(t_id: int, group: str, index: int):
 
 @app.route('/tournament/<int:t_id>/record_knockout/<stage>/<int:index>', methods=['POST'])
 def record_knockout_score(t_id: int, stage: str, index: int):
-    if not session.get('admin_logged_in'):
+    if not flask_login.current_user.is_authenticated:
         return redirect(url_for('knockout_view', t_id=t_id))
 
     conn = get_db()
@@ -587,7 +609,7 @@ def knockout_view(t_id: int):
 
 @app.route('/delete/<int:t_id>', methods=['POST'])
 def delete_tournament(t_id: int):
-    if not session.get('admin_logged_in'):
+    if not flask_login.current_user.is_authenticated:
         return redirect(url_for('index'))
     conn = get_db()
     conn.execute('DELETE FROM tournaments WHERE id=?', (t_id,))

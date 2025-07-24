@@ -49,7 +49,7 @@
                 <tr>
                     <td>{{ m.p1 }} vs {{ m.p2 }}</td>
                     <td>
-                        {% if session.admin_logged_in %}
+                        {% if current_user.is_authenticated %}
                         <form action="{{ url_for('record_score', t_id=t_id, group='A', index=ns.idx) }}" method="post">
                             <input type="number" name="score1" min="0" required class="score-input" value="{{ m.score1 if m.score1 is not none }}">
                             -
