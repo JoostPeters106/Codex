@@ -14,6 +14,8 @@ python app.py
 
 Then navigate to `http://localhost:5000/` to use the tournament manager.
 
+Active line 633 and deactivade line 631 in app.py to run on network
+
 The main page allows an administrator to log in. Use the default credentials:
 
 ```
