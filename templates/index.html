@@ -31,33 +31,20 @@
         <section id="new-tournament" class="card">
             <h2>New Tournament</h2>
             {% if session.admin_logged_in %}
-            <form action="{{ url_for('set_title') }}" method="post" class="add-player-form">
-                <input type="text" class="styled-input" name="tournament_title" placeholder="Tournament title" value="{{ session.tournament_title }}">
-                <button type="submit" class="styled-button primary-button">Set Title</button>
-            </form>
-            <form action="{{ url_for('add_player') }}" method="post" class="add-player-form">
-                <input type="text" class="styled-input" name="player_name" placeholder="Player name">
+            <input type="text" id="tournament-title" class="styled-input" placeholder="Tournament title">
+            <form id="add-player-form" class="add-player-form">
+                <input type="text" id="player-name" class="styled-input" placeholder="Player name">
                 <button type="submit" class="styled-button primary-button">Add</button>
             </form>
 
             <div class="player-container">
-                {% if players %}
-                <ul id="player-list">
-                    {% for p in players %}
-                    <li>
-                        {{ p }}
-                        <form action="{{ url_for('remove_player', index=loop.index0) }}" method="post">
-                            <button type="submit" class="styled-button danger-button">Remove</button>
-                        </form>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <form action="{{ url_for('start_tournament') }}" method="post">
-                    <button type="submit" class="styled-button primary-button">Start Tournament</button>
+                <p id="no-players">No players added yet.</p>
+                <ul id="player-list"></ul>
+                <form id="create-form" action="{{ url_for('start_tournament') }}" method="post">
+                    <input type="hidden" name="title" id="create-title">
+                    <input type="hidden" name="players_json" id="players-json">
+                    <button type="submit" class="styled-button primary-button">Create Tournament</button>
                 </form>
-                {% else %}
-                <p>No players added yet.</p>
-                {% endif %}
             </div>
             {% else %}
             <p>Login as admin to create tournaments.</p>
@@ -96,7 +83,7 @@
             {% endif %}
         </section>
     </div>
-
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 
 <footer class="site-footer">
