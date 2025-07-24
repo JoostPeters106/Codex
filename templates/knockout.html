@@ -23,7 +23,7 @@
                 <tr>
                     <td>{{ m.p1 }} vs {{ m.p2 }}</td>
                     <td>
-                        {% if session.admin_logged_in %}
+                        {% if current_user.is_authenticated %}
                         <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='playins', index=loop.index0) }}" method="post">
                             <input type="number" name="score1" min="0" required class="score-input" value="{{ m.score1 if m.score1 is not none }}">
                             -
@@ -49,7 +49,7 @@
                 <tr>
                     <td>{{ m.p1 }} vs {{ m.p2 }}</td>
                     <td>
-                        {% if session.admin_logged_in %}
+                        {% if current_user.is_authenticated %}
                         <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='qfs', index=loop.index0) }}" method="post">
                             <input type="number" name="score1" min="0" required class="score-input" value="{{ m.score1 if m.score1 is not none }}">
                             -
@@ -73,7 +73,7 @@
                 <tr>
                     <td>{{ m.p1 }} vs {{ m.p2 }}</td>
                     <td>
-                        {% if session.admin_logged_in and m.p1 and m.p2 and 'Winner of' not in m.p1 and 'Winner of' not in m.p2 %}
+                        {% if current_user.is_authenticated and m.p1 and m.p2 and 'Winner of' not in m.p1 and 'Winner of' not in m.p2 %}
                         <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='sfs', index=loop.index0) }}" method="post">
                             <input type="number" name="score1" min="0" required class="score-input" value="{{ m.score1 if m.score1 is not none }}">
                             -
@@ -95,7 +95,7 @@
                 <tr>
                     <td>{{ bracket.final.p1 }} vs {{ bracket.final.p2 }}</td>
                     <td>
-                        {% if session.admin_logged_in and bracket.final.p1 and bracket.final.p2 and 'Winner of' not in bracket.final.p1 and 'Winner of' not in bracket.final.p2 %}
+                        {% if current_user.is_authenticated and bracket.final.p1 and bracket.final.p2 and 'Winner of' not in bracket.final.p1 and 'Winner of' not in bracket.final.p2 %}
                         <form action="{{ url_for('record_knockout_score', t_id=t_id, stage='final', index=0) }}" method="post">
                             <input type="number" name="score1" min="0" required class="score-input" value="{{ bracket.final.score1 if bracket.final.score1 is not none }}">
                             -

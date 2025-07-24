@@ -13,7 +13,7 @@
     {% if current_tournament_name %}
     <h2>{{ current_tournament_name }}</h2>
     {% endif %}
-    {% if not session.admin_logged_in %}
+    {% if not current_user.is_authenticated %}
     <form action="{{ url_for('login') }}" method="post" class="login-form">
         <input type="text" name="username" placeholder="Username" class="styled-input" required>
         <input type="password" name="password" placeholder="Password" class="styled-input" required>
@@ -30,7 +30,7 @@
     <div class="index-layout">
         <section id="new-tournament" class="card">
             <h2>New Tournament</h2>
-            {% if session.admin_logged_in %}
+            {% if current_user.is_authenticated %}
             <input type="text" id="tournament-title" class="styled-input" placeholder="Tournament title">
             <form id="add-player-form" class="add-player-form">
                 <input type="text" id="player-name" class="styled-input" placeholder="Player name" style="margin-top: 0.5em">
@@ -61,7 +61,7 @@
                     <span class="caption">Players in tournament: {{ t.players|length }}</span>
                     <div class="actions">
                         <a href="{{ url_for('tournament_view', t_id=t.id) }}" class="styled-button secondary-button" style="margin-top: 0px">Open</a>
-                        {% if session.admin_logged_in %}
+                        {% if current_user.is_authenticated %}
                         <form action="{{ url_for('delete_tournament', t_id=t.id) }}" method="post">
                             <button type="submit" class="styled-button danger-button">Delete</button>
                         </form>
