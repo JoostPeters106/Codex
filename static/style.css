@@ -107,7 +107,7 @@ body {
   align-items: center;
   top: 0;
   z-index: 1000;
-  min-height: clamp(60px, 8vh, 70px);
+  min-height: 90px;
   box-shadow: var(--shadow-md);
   flex-wrap: wrap;
   gap: var(--spacing-sm);
@@ -709,7 +709,7 @@ tr:last-child td {
 /* Large Desktop */
 @media (min-width: 1200px) {
   .site-header {
-    min-height: 70px;
+    min-height: 90px;
     padding: var(--spacing-sm) var(--spacing-xl);
   }
   
@@ -740,7 +740,7 @@ tr:last-child td {
 /* Desktop */
 @media (min-width: 992px) and (max-width: 1199px) {
   .site-header {
-    min-height: 65px;
+    min-height: 90px;
   }
   
   .site-header h1 {
