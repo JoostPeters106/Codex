@@ -77,7 +77,7 @@ def logout():
 
 @app.route('/')
 def index():
-    players = session.get('players', [])
+    players = []
     page = request.args.get('page', 1, type=int)
     per_page = 3
     conn = get_db()
@@ -149,7 +149,11 @@ def set_title():
 def start_tournament():
     if not session.get('admin_logged_in'):
         return redirect(url_for('index'))
-    players = session.get('players', [])
+    players_json = request.form.get('players_json', '[]')
+    try:
+        players = json.loads(players_json)
+    except json.JSONDecodeError:
+        players = []
     if not players:
         return redirect(url_for('index'))
     group_a = draw_group(players.copy())
@@ -170,7 +174,7 @@ def start_tournament():
     }
 
     conn = get_db()
-    name = session.pop('tournament_title', '').strip()
+    name = request.form.get('title', '').strip()
     if not name:
         name = f"Tournament {datetime.utcnow().isoformat(timespec='seconds')}"
     cur = conn.execute(
@@ -182,7 +186,6 @@ def start_tournament():
     conn.close()
 
     session['current_tournament_id'] = tid
-    session.pop('players', None)
     return render_template('loading.html', t_id=tid)
 
 
